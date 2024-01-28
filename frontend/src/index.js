@@ -4,10 +4,11 @@ import './index.css';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { ChakraBaseProvider } from '@chakra-ui/react'
+import theme from './Theme'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <ChakraBaseProvider>
+  <ChakraBaseProvider theme={theme}>
     <React.StrictMode>
       <App />
     </React.StrictMode>
