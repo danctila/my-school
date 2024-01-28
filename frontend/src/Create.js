@@ -86,7 +86,7 @@ function Create() {
                 </Box>
                 <HStack spacing='15px'>
                 <Button bg='#3AED3A' color='black' borderRadius='3px' w='90px' h='40px' _hover onClick={handleSubmit}>Create</Button>
-                
+                <Button bg='white' color='black' borderColor='black' border='1px' borderRadius='3px' w='90px' h='40px' _hover onClick={() => navigate('/')}>Back</Button>
                 </HStack>
             </form>
         </Box>
