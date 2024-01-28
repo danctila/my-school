@@ -1,21 +1,28 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Box, Button, Center, FormLabel, HStack, Heading, Input } from '@chakra-ui/react'
 
 function Create() {
+
+    {/* Hold current state of input form */}
     const [name, setName] = useState('')
     const [type, setType] = useState('')
     const [resources, setResources] = useState('')
     const [contact, setContact] = useState('')
 
+    {/* Holds form error messages to be displayed under each respective input field */}
     const [nameError, setNameError] = useState('');
     const [typeError, setTypeError] = useState('');
     const [resourcesError, setResourcesError] = useState('');
     const [contactError, setContactError] = useState('');
     
+     {/* Used for route navigation */}
     const navigate = useNavigate()
+
+      {/* Handles form submission */}
     const handleSubmit = (event) => {
+        // Prevents default window refresh
         event.preventDefault();
 
          // Form validation
@@ -47,7 +54,7 @@ function Create() {
             setContactError('');
         }
 
-        
+        // Adds to database if form is validated using current users ID with /create server endpoint
         axios.post('http://localhost:8081/create', {name, type, resources, contact})
         .then(res => {
             navigate('/');
@@ -58,6 +65,8 @@ function Create() {
     <Center display='flex' h='100vh' bg='#3A77ED' justifyContent='center' alignItems='center'>
         <Box w='50%' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' p='15px'>
             <Heading fontWeight='bold'>Create User</Heading>
+
+            {/* Form Section */}
             <form onSubmit={handleSubmit}>
                     <Box mb='5px'>
                         <FormLabel htmlFor=''>Name</FormLabel>

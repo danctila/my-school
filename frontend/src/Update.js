@@ -1,24 +1,34 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { Box, Button, Center, FormLabel, HStack, Heading, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 
 function Update() {
+    
+    {/* Hold current state of input form */}
     const [name, setName] = useState('')
     const [type, setType] = useState('')
     const [resources, setResources] = useState('')
     const [contact, setContact] = useState('')
+
+    {/* Holds user data fetched from /user endpoint */}
     const [user, setUser] = useState({})
+
+    {/* Holds form error messages to be displayed under each respective input field */}
     const [nameError, setNameError] = useState('');
     const [typeError, setTypeError] = useState('');
     const [resourcesError, setResourcesError] = useState('');
     const [contactError, setContactError] = useState('');
 
+    {/* Used for route navigation */}
     const navigate = useNavigate()
 
+    {/* Pulls selected user's ID from route */}
     const { id } = useParams();
 
+    {/* Handles form submission */}
     const handleSubmit = (event) => {
+        // Prevents default window refresh
         event.preventDefault();
 
          // Form validation
@@ -50,12 +60,14 @@ function Update() {
             setContactError('');
         }
 
+        // Updates database if form is validated using current users ID with /update server endpoint
         axios.put('http://localhost:8081/update/'+id, {name, type, resources, contact})
         .then(res => {
             navigate('/');
         }).catch(err => console.log(err))
     }
 
+    {/* Pulls current user when update page is loaded*/}
     useEffect(() => {
         axios.get('http://localhost:8081/user/'+id)
         .then(res => setUser(res.data))
@@ -67,6 +79,8 @@ function Update() {
         <Center display='flex' h='100vh' bg='#3A77ED' justifyContent='center' alignItems='center'>
         <Box w='50%' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' p='15px'>
         <Heading fontWeight='bold'>Update Contact</Heading>
+
+        {/* Current contact being edited table */}
         <TableContainer>
                 <Table size='sm'>
                 <Thead>
@@ -99,6 +113,8 @@ function Update() {
                     </Tbody>
                 </Table>
             </TableContainer>
+
+            {/* Form Section */}
             <form onSubmit={handleSubmit}>
                 <Box mb='5px'>
                     <FormLabel htmlFor=''>Name</FormLabel>

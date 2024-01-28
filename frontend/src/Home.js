@@ -1,4 +1,3 @@
-import React from 'react'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { useNavigate, Link as ReactRouterLink } from 'react-router-dom'
@@ -144,6 +143,8 @@ function Home() {
                     </Tbody>
                 </Table>
             </TableContainer>
+
+            {/* Backup Section */}
             <HStack w='1500px' justifyContent='left' mt='60px'>
                 <Text fontSize='24px' fontWeight='bold'>Backup</Text>
             </HStack>
@@ -151,6 +152,8 @@ function Home() {
                 <Text fontSize='20px' fontWeight='normal'>Download a current copy of all table values to a text file:</Text>
                 <Button borderRadius='5px' onClick={downloadBackup} w='160px' h='40px' color='white' bg='#7C3AED' _hover>Download Backup</Button>
             </Box>
+
+            {/* Help & Instructions Section */}
             <HStack w='1500px' justifyContent='left' mt='60px'>
                 <Text fontSize='24px' fontWeight='bold'>Help & Instructions</Text>
             </HStack>
