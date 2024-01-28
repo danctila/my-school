@@ -88,6 +88,43 @@ function Home() {
                     <Button borderRadius='5px'value='4' bg={IDDecFilter ? '#3AED3A': 'white'} _hover checked={IDDecFilter} onClick={handleCheckbox.bind(this)}>ID DEC</Button>{/*ID DEC = filter 4*/}
                 </HStack>
             </HStack>
+            <TableContainer w='1510px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2'>
+                 <HStack pt='15px' px='35px' w='100%' justifyContent='space-between' >
+                    <Text my='0px' h='30px' fontWeight='bold' fontSize='24px'>Results:</Text>
+                    <Button borderRadius='5px'  my='0px' w='80px' h='40px' as={ReactRouterLink} to='/create' bg='#3AED3A' _hover >Add+</Button>
+                </HStack>
+                <Divider borderColor='black' h='1px' w='1505px' orientation='horizontal'/>
+                <Table size='sm'>
+                    <Thead>
+                        <Tr>
+                            <Th color='black' fontSize='20px' fontWeight='normal'>ID  </Th>
+                            <Th color='black' fontSize='20px' fontWeight='normal'> NAME</Th>
+                            <Th color='black' fontSize='20px' fontWeight='normal'>TYPE</Th>
+                            <Th color='black' fontSize='20px' fontWeight='normal'>RESOURCES</Th>
+                            <Th color='black'fontSize='20px' fontWeight='normal'>CONTACT</Th>
+                            <Th color='black' fontSize='20px' fontWeight='normal'>ACTION</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody >
+                    {data.map((data, i) => (
+                        <>
+                        <Tr color='black'>
+                            <Td fontSize='14px'>{data.id}</Td>
+                            <Td fontSize='14px'>{data.name}</Td>
+                            <Td fontSize='14px'>{data.type}</Td>
+                            <Td fontSize='14px'>{data.resources}</Td>
+                            <Td fontSize='14px'>{data.contact}</Td>
+                            <Td>
+                                <Button fontSize='14px'fontWeight='normal' mx='2px' color='white' borderRadius='3px' w='70px' h='30px' bg='#3A77ED' as={ReactRouterLink} to={`/update/${data.id}`} _hover>UPDATE</Button>
+                                <Button fontSize='14px'fontWeight='normal' mx='2px'color='white' borderRadius='3px' w='70px' h='30px' bg='#ED3A3A' onClick={e => handleDelete(data.id)} _hover>REMOVE</Button>
+                            </Td>
+                        </Tr>
+                        
+                        </>
+                    ))}
+                    </Tbody>
+                </Table>
+            </TableContainer>
         </VStack>
       )
     }
