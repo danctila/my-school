@@ -69,6 +69,18 @@ function Home() {
         }
      }
 
+     const downloadBackup = () => {
+        let stringData = data.map(function(item) {
+            return item.name + ', ' + item.type + ', ' + item.resources + ', ' + item.contact 
+        })
+        let csvContent = stringData.join('\n\n')
+        let element = document.createElement('a')
+        let file = new Blob([csvContent], {type: 'text/plain'})
+        element.href = URL.createObjectURL(file)
+        element.download = 'backup.txt'
+        element.click()
+     }
+
     return (
         <VStack bg='#EFEFF1' minW='1600px'>
            <HStack>
@@ -135,6 +147,13 @@ function Home() {
                     </Tbody>
                 </Table>
             </TableContainer>
+            <HStack w='1500px' justifyContent='left' mt='60px'>
+                <Text fontSize='24px' fontWeight='bold'>Backup</Text>
+            </HStack>
+            <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2'>
+                <Text fontSize='20px' fontWeight='normal'>Download a current copy of all table values to a text file:</Text>
+                <Button borderRadius='5px' onClick={downloadBackup} w='160px' h='40px' color='white' bg='#7C3AED' _hover>Download Backup</Button>
+            </Box>
         </VStack>
       )
     }
