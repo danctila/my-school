@@ -2,6 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { useNavigate, Link as ReactRouterLink } from 'react-router-dom'
+import { Box, Button, HStack, Text, VStack, Input, Divider, TableContainer, Table, Thead, Tr, Th, Tbody, Td, UnorderedList, ListItem } from '@chakra-ui/react'
 
 function Home() {
     const Navigate = useNavigate()
