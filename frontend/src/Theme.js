@@ -6,7 +6,6 @@ const Theme = extendTheme({
         body: `"Inter Variable", sans-serif`,
         heading: `"Inter Variable", sans-serif`,
     }
-
 }) 
 
 export default Theme

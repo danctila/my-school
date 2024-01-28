@@ -129,7 +129,6 @@ function Home() {
                             return data
                         }
                     }).map((data, i) => (
-                        <>
                         <Tr color='black'>
                             <Td fontSize='14px'>{data.id}</Td>
                             <Td fontSize='14px'>{data.name}</Td>
@@ -141,8 +140,6 @@ function Home() {
                                 <Button fontSize='14px'fontWeight='normal' mx='2px'color='white' borderRadius='3px' w='70px' h='30px' bg='#ED3A3A' onClick={e => handleDelete(data.id)} _hover>REMOVE</Button>
                             </Td>
                         </Tr>
-                        
-                        </>
                     ))}
                     </Tbody>
                 </Table>

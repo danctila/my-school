@@ -54,43 +54,42 @@ function Create() {
         }).catch(err => console.log(err))
     }
 
-
   return (
     <Center display='flex' h='100vh' bg='#3A77ED' justifyContent='center' alignItems='center'>
         <Box w='50%' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' p='15px'>
-        <Heading fontWeight='bold'>Create User</Heading>
-        <form onSubmit={handleSubmit}>
-                <Box mb='5px'>
-                    <FormLabel htmlFor=''>Name</FormLabel>
-                    <Input type='text' placeholder='Enter Name' className='form-control' 
-                    onChange={e => setName(e.target.value)}/>
-                    <span className='text-danger'>{nameError}</span>
-                </Box>
-                <Box mb='5px'>
-                    <FormLabel htmlFor=''>Type</FormLabel>
-                    <Input type='text' placeholder='Enter Type' className='form-control' 
-                     onChange={e => setType(e.target.value)}/>
-                      <span className='text-danger'>{typeError}</span>
-                </Box>
-                <Box mb='5px'>
-                    <FormLabel htmlFor=''>Resources</FormLabel>
-                    <Input type='text' placeholder='Enter Resources' className='form-control' 
-                     onChange={e => setResources(e.target.value)}/>
-                     <span className='text-danger'>{resourcesError}</span>
-                </Box>
-                <Box mb='5px'>
-                    <FormLabel htmlFor=''>Contact</FormLabel>
-                    <Input type='text' placeholder='Enter Contact' className='form-control' 
-                     onChange={e => setContact(e.target.value)}/>
-                     <span className='text-danger'>{contactError}</span>
-                </Box>
-                <HStack spacing='15px'>
-                <Button bg='#3AED3A' color='black' borderRadius='3px' w='90px' h='40px' _hover onClick={handleSubmit}>Create</Button>
-                <Button bg='white' color='black' borderColor='black' border='1px' borderRadius='3px' w='90px' h='40px' _hover onClick={() => navigate('/')}>Back</Button>
-                </HStack>
+            <Heading fontWeight='bold'>Create User</Heading>
+            <form onSubmit={handleSubmit}>
+                    <Box mb='5px'>
+                        <FormLabel htmlFor=''>Name</FormLabel>
+                        <Input type='text' placeholder='Enter Name' className='form-control' 
+                        onChange={e => setName(e.target.value)}/>
+                        <span className='text-danger'>{nameError}</span>
+                    </Box>
+                    <Box mb='5px'>
+                        <FormLabel htmlFor=''>Type</FormLabel>
+                        <Input type='text' placeholder='Enter Type' className='form-control' 
+                            onChange={e => setType(e.target.value)}/>
+                        <span className='text-danger'>{typeError}</span>
+                    </Box>
+                    <Box mb='5px'>
+                        <FormLabel htmlFor=''>Resources</FormLabel>
+                        <Input type='text' placeholder='Enter Resources' className='form-control' 
+                            onChange={e => setResources(e.target.value)}/>
+                        <span className='text-danger'>{resourcesError}</span>
+                    </Box>
+                    <Box mb='5px'>
+                        <FormLabel htmlFor=''>Contact</FormLabel>
+                        <Input type='text' placeholder='Enter Contact' className='form-control' 
+                            onChange={e => setContact(e.target.value)}/>
+                        <span className='text-danger'>{contactError}</span>
+                    </Box>
+                    <HStack spacing='15px'>
+                        <Button bg='#3AED3A' color='black' borderRadius='3px' w='90px' h='40px' _hover onClick={handleSubmit}>Create</Button>
+                        <Button bg='white' color='black' borderColor='black' border='1px' borderRadius='3px' w='90px' h='40px' _hover onClick={() => navigate('/')}>Back</Button>
+                    </HStack>
             </form>
         </Box>
-        </Center>
+    </Center>
   )
 }
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
-import { Box, Button, Center, FormControl, FormLabel, HStack, Heading, Input, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import { Box, Button, Center, FormLabel, HStack, Heading, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 
 function Update() {
     const [name, setName] = useState('')
@@ -130,8 +130,6 @@ function Update() {
                 </HStack>
             </form>
             </Box>
-        
-
         </Center>
   )
 }
