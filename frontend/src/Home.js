@@ -154,6 +154,95 @@ function Home() {
                 <Text fontSize='20px' fontWeight='normal'>Download a current copy of all table values to a text file:</Text>
                 <Button borderRadius='5px' onClick={downloadBackup} w='160px' h='40px' color='white' bg='#7C3AED' _hover>Download Backup</Button>
             </Box>
+            <HStack w='1500px' justifyContent='left' mt='60px'>
+                <Text fontSize='24px' fontWeight='bold'>Help & Instructions</Text>
+            </HStack>
+            <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' mb='150px'>
+                <Text fontSize='20px' fontWeight='normal' mb='0px'>Searching:</Text>
+                <UnorderedList>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    Search terms include: ID number, name, type, resources, and contact
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    If any field INCLUDES these terms provided in the search, the partner will be displayed in the results
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    Results are automatically validated via a dynamic entering system
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    If a term does not match any result, no results will be displayed
+                    </ListItem>
+                </UnorderedList>
+                <Text fontSize='20px' fontWeight='normal' mb='0px'>Filtering:</Text>
+                <UnorderedList>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    Only one filtering category can be used at once
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    Filtering includes Name A-Z(alphabetical), Name Z-A(reverse alphabetical), ID Inc(increasing id numbers), ID Dec(decreasing id numbers)
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    No filter defaults to Id Inc(increasing id numbers)
+                    </ListItem>
+                </UnorderedList>
+                <Text fontSize='20px' fontWeight='normal' mb='0px'>Creating(ADD+):</Text>
+                <UnorderedList>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    All fields are required (name, type, resources, contact)
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    Form cannot be submitted until all fields are filled
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    A field with no value can be inputted as ‘n/a’ to submit without relevant value
+                    </ListItem>
+                </UnorderedList>
+                <Text fontSize='20px' fontWeight='normal' mb='0px'>Updating(UPDATE):</Text>
+                <UnorderedList>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    All fields are required (name, type, resources, contact)
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    Form cannot be submitted until all fields are filled
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    A field with no value can be inputted as ‘n/a’ to submit without relevant value
+                    </ListItem>
+                </UnorderedList>
+                <Text fontSize='20px' fontWeight='normal' mb='0px'>Deleting(REMOVE):</Text>
+                <UnorderedList>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    Deleting cannot be reversed
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    Deleting does not require a confirmation
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    The page automatically refreshes for updates to be displayed after the remove button is clicked
+                    </ListItem>
+                </UnorderedList>
+                <Text fontSize='20px' fontWeight='normal' mb='0px'>Backup:</Text>
+                <UnorderedList>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    To download the current state of the table (displayed state in results section), click  “Download Backup File” 
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    Backup files are named “Backup” but can be renamed to user preference
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    Backup files are .txt filetype and can be opened in NotePad
+                    </ListItem>
+                </UnorderedList>
+                <Text fontSize='20px' fontWeight='normal' mb='0px'>Validation:</Text>
+                <UnorderedList>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    Search terms are automatically validated using ‘includes’ logic that only displays results that include search terms
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    All fields are required on both the update and create page and will display dynamic error messages if any of the categories are not filled
+                    </ListItem>
+                </UnorderedList>
+            </Box>
         </VStack>
       )
     }
