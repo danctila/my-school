@@ -62,6 +62,7 @@ Alternatively, you can click on the terminal menu button at the top of the scree
 
 ##### 5 - Start the frontend
 In the terminal window you just created, you should be located in the directory of your file. This means that at the end of the command line to the left of your cursor there should be `my-school>`, similar to below
+
 <img src="https://github.com/danctila/my-school/assets/134968796/caede240-b0fa-421e-9b75-53c5174998c4" alt="terminal window" width="400"/>
 
 Type the following commands in this order into this terminal window:
@@ -72,6 +73,7 @@ After these commands, the frontend server should start and the site https://loca
 
 ##### 6 - Start the backend
 In the terminal window you just started the frontend in, click the + button to create a new terminal. You should again be located in the my-school directory. 
+
 <img src="https://github.com/danctila/my-school/assets/134968796/caede240-b0fa-421e-9b75-53c5174998c4" alt="terminal window" width="400"/>
 
 Type these commands in this order into this new terminal window:
