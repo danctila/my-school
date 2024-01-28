@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
-import { Box, Button, Center, FormControl, FormLabel, HStack, Heading, Input } from '@chakra-ui/react'
+import { Box, Button, Center, FormControl, FormLabel, HStack, Heading, Input, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 
 function Update() {
     const [name, setName] = useState('')
@@ -67,7 +67,38 @@ function Update() {
         <Center display='flex' h='100vh' bg='#3A77ED' justifyContent='center' alignItems='center'>
         <Box w='50%' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' p='15px'>
         <Heading fontWeight='bold'>Update Contact</Heading>
-            
+        <TableContainer>
+                <Table size='sm'>
+                <Thead>
+                        <Tr>
+                            <Th color='black' fontSize='15px' fontWeight='normal'>ID  </Th>
+                            <Th color='black' fontSize='15px' fontWeight='normal'> NAME</Th>
+                            <Th color='black' fontSize='15px' fontWeight='normal'>TYPE</Th>
+                            <Th color='black' fontSize='15px' fontWeight='normal'>RESOURCES</Th>
+                            <Th color='black'fontSize='15px' fontWeight='normal'>CONTACT</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        <Tr>
+                            <Td>
+                            {user.id}
+                            </Td>
+                            <Td>
+                            {user.name}
+                            </Td>
+                            <Td>
+                            {user.type}
+                            </Td>
+                            <Td>
+                            {user.resources}
+                            </Td>
+                            <Td>
+                            {user.contact}
+                            </Td>
+                        </Tr>
+                    </Tbody>
+                </Table>
+            </TableContainer>
             <form onSubmit={handleSubmit}>
                 <Box mb='5px'>
                     <FormLabel htmlFor=''>Name</FormLabel>
