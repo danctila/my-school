@@ -106,7 +106,16 @@ function Home() {
                         </Tr>
                     </Thead>
                     <Tbody >
-                    {data.map((data, i) => (
+                    {data.filter((data) => {
+                        if (searchTerm === '') {
+                            return data
+                        }
+                        else if (String(data.id).toLowerCase().includes(searchTerm.toLowerCase()) || data.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                data.type.toLowerCase().includes(searchTerm.toLowerCase()) || data.resources.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                data.contact.toLowerCase().includes(searchTerm.toLowerCase())) {
+                            return data
+                        }
+                    }).map((data, i) => (
                         <>
                         <Tr color='black'>
                             <Td fontSize='14px'>{data.id}</Td>
