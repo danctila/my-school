@@ -66,8 +66,9 @@ In the terminal window you just created, you should be located in the directory 
 <img src="https://github.com/danctila/my-school/assets/134968796/caede240-b0fa-421e-9b75-53c5174998c4" alt="terminal window" width="400"/>
 
 Type the following commands in this order into this terminal window:
-1. `cd frontend`
-2. `npm start`
+1. `npm i`
+2. `cd frontend`
+3. `npm start`
 
 After these commands, the frontend server should start and the site https://localhost:3000 should open in your browser. If it does not automatically open, navigate to that site in any browser.
 
