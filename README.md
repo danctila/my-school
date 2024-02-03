@@ -2,7 +2,7 @@
 
 my-school is a project developed with React and Node.js for the 2023/2024 coding and programming CT FBLA competition. 
 
-## Project Screenshot
+## Project Screenshots
 
 The MySchool program looks like this in a localhost development environment:
 
@@ -20,7 +20,7 @@ The MySchool program looks like this in a localhost development environment:
 
 ### Prerequisites 
 
-In order to run this project **you will need 2 applications installed** on your machine
+In order to run this project **you will need 3 applications installed** on your machine
 
 #### 1 - Visual Studio Code
 Install Microsofts Visual Studio Code IDE from [this website](https://code.visualstudio.com/ "this website")
@@ -28,9 +28,14 @@ Install Microsofts Visual Studio Code IDE from [this website](https://code.visua
 #### 2 - Node JS
 Install Node JS from [this website](https://nodejs.org/en "this website") onto your machine to be able to run the start commands for the frontend and backend
 <img src="https://github.com/danctila/my-school/assets/134968796/33019d6d-df2d-44c0-b1c6-4b314864650b" alt="nodejs website" width="800"/>
+#### 3 - GitHub
+-Install Git from [this website](https://gitforwindows.org/ "this website") onto your machine to be able to run the start commands for the frontend and backend.
+
+-On this repository site (github.com), create an account that can be used to sign in in later steps.
+<img src="https://github.com/danctila/my-school/assets/134968796/745c5652-6167-46ce-be89-baf9bfbb7177" alt="nodejs website" width="800"/>
 
 ### Usage
-One you have installed the **necessary 2 applications**, follow these steps to run the project.
+One you have installed the **necessary 3 applications**, follow these steps to run the project.
 
 ##### 1 - Create a folder
 On your desktop, right click anywhere and create a folder named `mySchool`
@@ -66,9 +71,9 @@ In the terminal window you just created, you should be located in the directory 
 <img src="https://github.com/danctila/my-school/assets/134968796/caede240-b0fa-421e-9b75-53c5174998c4" alt="terminal window" width="400"/>
 
 Type the following commands in this order into this terminal window:
-1. `npm i`
-2. `cd frontend`
-3. `npm start`
+1.  `cd frontend` -> enter
+2. `npm i` -> enter
+3. `npm start` -> enter
 
 After these commands, the frontend server should start and the site https://localhost:3000 should open in your browser. If it does not automatically open, navigate to that site in any browser.
 
@@ -80,6 +85,7 @@ In the terminal window you just started the frontend in, click the + button to c
 Type these commands in this order into this new terminal window:
 1. `cd backend`
 2. `npm start`
+3. In the backend folder, enter the file server.js and press `ctrl s` just to save the file
 
 After these commands, the backend server should start and the site https://localhost:8081 should be prompted in the terminal. If the server is correctly configured, the terminal should say "listening..." 
 
