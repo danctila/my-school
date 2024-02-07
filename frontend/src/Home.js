@@ -242,6 +242,18 @@ function Home() {
                     All fields are required on both the update and create page and will display dynamic error messages if any of the categories are not filled
                     </ListItem>
                 </UnorderedList>
+                <Text fontSize='20px' fontWeight='normal' mb='0px'>ID Numbers:</Text>
+                <UnorderedList>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    ID numbers are added on a cumulative basis
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    ID numbers of added entries are based on the running total of the table
+                    </ListItem>
+                    <ListItem fontWeight='normal' fontSize='16px'>
+                    EX: There are 40 entries and 1 is deleted. If 1 entry is added. The new entry added has an ID number of 41.
+                    </ListItem>
+                </UnorderedList>
             </Box>
         </VStack>
       )
