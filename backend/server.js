@@ -13,7 +13,6 @@ const db = mysql.createConnection({
     database: 'test_connections'
 })
 
-
 app.get('/', (req, res) => {
     const sql = "SELECT * FROM test_connections.connections";
     db.query(sql, (err, data) => {
