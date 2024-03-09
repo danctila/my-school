@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Box, Button, Center, FormLabel, HStack, Heading, Input } from '@chakra-ui/react'
@@ -16,11 +16,22 @@ function Create() {
     const [typeError, setTypeError] = useState('');
     const [resourcesError, setResourcesError] = useState('');
     const [contactError, setContactError] = useState('');
+    const [duplicateError, setDuplicateError] = useState('')
+
+    {/*Holds current state of the database*/}
+    const [data, setData] = useState([])
     
-     {/* Used for route navigation */}
+    {/* Used for route navigation */}
     const navigate = useNavigate()
 
-      {/* Handles form submission */}
+    useEffect(()=> {
+        axios.get('http://localhost:8081/')
+        .then(res => setData(res.data))
+        .catch(err => console.log(err))
+    }, [])
+
+
+    {/* Handles form submission */}
     const handleSubmit = (event) => {
         // Prevents default window refresh
         event.preventDefault();
@@ -54,6 +65,16 @@ function Create() {
             setContactError('');
         }
 
+        // Validates partner name input for duplicates
+        for(const element of data){
+            if(element.name === name){
+                setDuplicateError('Duplicate partner name')
+                return
+            } else {
+                setDuplicateError('')
+            }
+        }
+
         // Adds to database if form is validated using current users ID with /create server endpoint
         axios.post('http://localhost:8081/create', {name, type, resources, contact})
         .then(res => {
@@ -73,6 +94,7 @@ function Create() {
                         <Input type='text' placeholder='Enter Name' className='form-control' 
                         onChange={e => setName(e.target.value)}/>
                         <span className='text-danger'>{nameError}</span>
+                        <span className='text-danger'>{duplicateError}</span>
                     </Box>
                     <Box mb='5px'>
                         <FormLabel htmlFor=''>Type</FormLabel>
