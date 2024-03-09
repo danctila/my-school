@@ -85,12 +85,12 @@ function Create() {
   return (
     <Center display='flex' h='100vh' bg='#3A77ED' justifyContent='center' alignItems='center'>
         <Box w='50%' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' p='15px'>
-            <Heading fontWeight='bold'>Create User</Heading>
+            <Heading fontWeight='bold'>Create Partner</Heading>
 
             {/* Form Section */}
             <form onSubmit={handleSubmit}>
                     <Box mb='5px'>
-                        <FormLabel htmlFor=''>Name</FormLabel>
+                        <FormLabel htmlFor=''>Parter Name</FormLabel>
                         <Input type='text' placeholder='Enter Name' className='form-control' 
                         onChange={e => setName(e.target.value)}/>
                         <span className='text-danger'>{nameError}</span>

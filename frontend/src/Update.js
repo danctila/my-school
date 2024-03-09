@@ -78,15 +78,15 @@ function Update() {
    
         <Center display='flex' h='100vh' bg='#3A77ED' justifyContent='center' alignItems='center'>
         <Box w='50%' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' p='15px'>
-        <Heading fontWeight='bold'>Update Contact</Heading>
+        <Heading fontWeight='bold'>Update Partner</Heading>
 
-        {/* Current contact being edited table */}
+        {/* Current partner being edited table */}
         <TableContainer>
                 <Table size='sm'>
                 <Thead>
                         <Tr>
                             <Th color='black' fontSize='15px' fontWeight='normal'>ID  </Th>
-                            <Th color='black' fontSize='15px' fontWeight='normal'> NAME</Th>
+                            <Th color='black' fontSize='15px' fontWeight='normal'>PARTNER NAME</Th>
                             <Th color='black' fontSize='15px' fontWeight='normal'>TYPE</Th>
                             <Th color='black' fontSize='15px' fontWeight='normal'>RESOURCES</Th>
                             <Th color='black'fontSize='15px' fontWeight='normal'>CONTACT</Th>

@@ -110,7 +110,7 @@ function Home() {
                     <Thead>
                         <Tr>
                             <Th color='black' fontSize='20px' fontWeight='normal'>ID  </Th>
-                            <Th color='black' fontSize='20px' fontWeight='normal'> NAME</Th>
+                            <Th color='black' fontSize='20px' fontWeight='normal'>PARTNER NAME</Th>
                             <Th color='black' fontSize='20px' fontWeight='normal'>TYPE</Th>
                             <Th color='black' fontSize='20px' fontWeight='normal'>RESOURCES</Th>
                             <Th color='black'fontSize='20px' fontWeight='normal'>CONTACT</Th>
