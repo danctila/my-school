@@ -45,7 +45,7 @@ On your desktop, right click anywhere and create a folder named `mySchool`
 Open Visual Studio Code and drag the folder you just created into the Visual Studio Code window to copy it into your workspace.
 <img src="https://github.com/danctila/my-school/assets/134968796/ae20eebc-2c66-46d7-978d-a6edd6a4bdf4" alt="visual studio code workspace" width="800"/>
 
-##### 2 - Clone this repository
+##### 3 - Clone this repository
 In the Visual Studio Code search bar, type  `>Git: Clone` and press enter.
 <img src="https://github.com/danctila/my-school/assets/134968796/a815b856-6cbf-43c1-8b05-878596040d21" alt="git clone prompt" width="800"/>
 
