@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Box, Button, Center, FormLabel, HStack, Heading, Input } from '@chakra-ui/react'
+import { Box, Button, Center, FormLabel, HStack, Heading, Input, Tooltip } from '@chakra-ui/react'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 function Create() {
 
@@ -10,6 +11,9 @@ function Create() {
     const [type, setType] = useState('')
     const [resources, setResources] = useState('')
     const [contact, setContact] = useState('')
+
+     {/* Hold current state of tooltip */}
+    const [createTip, setCreateTip] = useState(false)
 
     {/* Holds form error messages to be displayed under each respective input field */}
     const [nameError, setNameError] = useState('');
@@ -85,8 +89,26 @@ function Create() {
   return (
     <Center display='flex' h='100vh' bg='#3A77ED' justifyContent='center' alignItems='center'>
         <Box w='50%' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' p='15px'>
-            <Heading fontWeight='bold'>Create Partner</Heading>
-
+            <HStack>
+            <Tooltip
+                
+                bg="#7C3AED"
+                color="white"
+                hasArrow
+                label='All data entry fields are required. Enter "n/a" to submit without a value'
+                placement="top-start"
+                isOpen={createTip}
+            >
+                <InfoOutlineIcon
+                mb='11px'
+                onMouseEnter={() => setCreateTip(true)}
+                onMouseLeave={() => setCreateTip(false)}
+                onClick={() => setCreateTip(!createTip)}
+                boxSize='16px'
+                />
+            </Tooltip>
+                <Heading fontWeight='bold'>Create Partner</Heading>
+            </HStack>
             {/* Form Section */}
             <form onSubmit={handleSubmit}>
                     <Box mb='5px'>
