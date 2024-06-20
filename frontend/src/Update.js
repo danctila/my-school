@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
-import { Box, Button, Center, FormLabel, HStack, Heading, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import { Box, Button, Center, FormLabel, HStack, Heading, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 function Update() {
     
@@ -10,6 +11,10 @@ function Update() {
     const [type, setType] = useState('')
     const [resources, setResources] = useState('')
     const [contact, setContact] = useState('')
+
+    {/* Holds current state of tooltip */ }
+    const [updateTip, setUpdateTip] = useState(false)
+
 
     {/* Holds user data fetched from /user endpoint */}
     const [user, setUser] = useState({})
@@ -78,8 +83,26 @@ function Update() {
    
         <Center display='flex' h='100vh' bg='#3A77ED' justifyContent='center' alignItems='center'>
         <Box w='50%' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' p='15px'>
+            <HStack>
+        <Tooltip
+                
+                bg="#7C3AED"
+                color="white"
+                hasArrow
+                label='All data entry fields are required. Enter "n/a" to submit without a value'
+                placement="top-start"
+                isOpen={updateTip}
+            >
+                <InfoOutlineIcon
+                mb='11px'
+                onMouseEnter={() => setUpdateTip(true)}
+                onMouseLeave={() => setUpdateTip(false)}
+                onClick={() => setUpdateTip(!updateTip)}
+                boxSize='16px'
+                />
+            </Tooltip>
         <Heading fontWeight='bold'>Update Partner</Heading>
-
+        </HStack>
         {/* Current partner being edited table */}
         <TableContainer>
                 <Table size='sm'>
