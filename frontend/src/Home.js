@@ -17,6 +17,7 @@ function Home() {
     const [filterTip, setFilterTip] = useState(false);
     const [actionTip, setActionTip] = useState(false);
     const [backupTip, setBackupTip] = useState(false);
+    const [resultsTip, setResultsTip] = useState(false);
 
     const handleDelete = (id) => {
         axios.delete('http://localhost:8081/delete/'+id)
@@ -135,7 +136,25 @@ function Home() {
             </HStack>
             <TableContainer w='1510px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2'>
                  <HStack pt='15px' px='35px' w='100%' justifyContent='space-between' >
+                <HStack>
+                <Tooltip
+                bg="#7C3AED"
+                color="white"
+                hasArrow
+                label='Only results that have been validated to include the current search terms will be displayed'
+                placement="top-start"
+                isOpen={resultsTip}
+            >
+                <InfoOutlineIcon
+                mb='-2'
+                onMouseEnter={() => setResultsTip(true)}
+                onMouseLeave={() => setResultsTip(false)}
+                onClick={() => setResultsTip(!resultsTip)}
+                boxSize='16px'
+                />
+            </Tooltip>
                     <Text my='0px' h='30px' fontWeight='bold' fontSize='24px'>Results:</Text>
+                </HStack>
                     <Button borderRadius='5px'  my='0px' w='80px' h='40px' as={ReactRouterLink} to='/create' bg='#3AED3A' _hover >Add+</Button>
                 </HStack>
                 <Divider borderColor='black' h='1px' w='1505px' orientation='horizontal'/>
@@ -160,6 +179,7 @@ function Home() {
                                     onMouseEnter={() => setActionTip(true)}
                                     onMouseLeave={() => setActionTip(false)}
                                     onClick={() => setActionTip(!actionTip)}
+                                    mb='1'
                                     boxSize='16px'
                                     />
                                 </Tooltip> ACTION</Th>
@@ -195,7 +215,6 @@ function Home() {
             {/* Backup Section */}
             <HStack w='1500px' justifyContent='left' mt='60px'>
             <Tooltip
-                
                 bg="#7C3AED"
                 color="white"
                 hasArrow
@@ -223,51 +242,6 @@ function Home() {
                 <Text fontSize='24px' fontWeight='bold' mb='15px'>Help & Instructions</Text>
             </HStack>
             <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' mb='150px'>
-                <Text fontSize='20px' fontWeight='normal' mb='0px'>Searching:</Text>
-                <UnorderedList>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    If any field INCLUDES these terms provided in the search, the partner will be displayed in the results
-                    </ListItem>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    Results are automatically validated via a dynamic entering system
-                    </ListItem>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    If a term does not match any result, no results will be displayed
-                    </ListItem>
-                </UnorderedList>
-                <Text fontSize='20px' fontWeight='normal' mb='0px'>Creating(ADD+):</Text>
-                <UnorderedList>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    All fields are required (name, type, resources, contact)
-                    </ListItem>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    Form cannot be submitted until all fields are filled
-                    </ListItem>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    A field with no value can be inputted as ‘n/a’ to submit without relevant value
-                    </ListItem>
-                </UnorderedList>
-                <Text fontSize='20px' fontWeight='normal' mb='0px'>Updating(UPDATE):</Text>
-                <UnorderedList>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    All fields are required (name, type, resources, contact)
-                    </ListItem>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    Form cannot be submitted until all fields are filled
-                    </ListItem>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    A field with no value can be inputted as ‘n/a’ to submit without relevant value
-                    </ListItem>
-                </UnorderedList>
-                <Text fontSize='20px' fontWeight='normal' mb='0px'>Validation:</Text>
-                <UnorderedList>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    Search terms are automatically validated using ‘includes’ logic that only displays results that include search terms
-                    </ListItem>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    All fields are required on both the update and create page and will display dynamic error messages if any of the categories are not filled
-                    </ListItem>
-                </UnorderedList>
                 <Text fontSize='20px' fontWeight='normal' mb='0px'>ID Numbers:</Text>
                 <UnorderedList>
                     <ListItem fontWeight='normal' fontSize='16px'>
