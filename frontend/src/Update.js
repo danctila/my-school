@@ -6,32 +6,32 @@ import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 function Update() {
     
-    {/* Hold current state of input form */}
+    // Hold current state of input form
     const [name, setName] = useState('')
     const [type, setType] = useState('')
     const [resources, setResources] = useState('')
     const [contact, setContact] = useState('')
 
-    {/* Holds current state of tooltip */ }
+    // Hold current state of tooltip
     const [updateTip, setUpdateTip] = useState(false)
 
 
-    {/* Holds user data fetched from /user endpoint */}
+    // Hold user data fetched from /user endpoint
     const [user, setUser] = useState({})
 
-    {/* Holds form error messages to be displayed under each respective input field */}
+    // Hold form error messages to be displayed under each respective input field
     const [nameError, setNameError] = useState('');
     const [typeError, setTypeError] = useState('');
     const [resourcesError, setResourcesError] = useState('');
     const [contactError, setContactError] = useState('');
 
-    {/* Used for route navigation */}
+    // Route navigation
     const navigate = useNavigate()
 
-    {/* Pulls selected user's ID from route */}
+    // Pull selected user's ID from route
     const { id } = useParams();
 
-    {/* Handles form submission */}
+    // Handles form submission
     const handleSubmit = (event) => {
         // Prevents default window refresh
         event.preventDefault();
@@ -72,7 +72,7 @@ function Update() {
         }).catch(err => console.log(err))
     }
 
-    {/* Pulls current user when update page is loaded*/}
+    // Pulls current user when update page is loaded
     useEffect(() => {
         axios.get('http://localhost:8081/user/'+id)
         .then(res => setUser(res.data))

@@ -6,26 +6,26 @@ import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 function Create() {
 
-    {/* Hold current state of input form */}
+    // Hold current state of input form
     const [name, setName] = useState('')
     const [type, setType] = useState('')
     const [resources, setResources] = useState('')
     const [contact, setContact] = useState('')
 
-     {/* Hold current state of tooltip */}
+    // Hold current state of tooltip
     const [createTip, setCreateTip] = useState(false)
 
-    {/* Holds form error messages to be displayed under each respective input field */}
+    // Holds form error messages to be displayed under each respective input field
     const [nameError, setNameError] = useState('');
     const [typeError, setTypeError] = useState('');
     const [resourcesError, setResourcesError] = useState('');
     const [contactError, setContactError] = useState('');
     const [duplicateError, setDuplicateError] = useState('')
 
-    {/*Holds current state of the database*/}
+    // Hold current state of the database
     const [data, setData] = useState([])
     
-    {/* Used for route navigation */}
+    // Route navigation
     const navigate = useNavigate()
 
     useEffect(()=> {
@@ -35,9 +35,9 @@ function Create() {
     }, [])
 
 
-    {/* Handles form submission */}
+    // Handle form submission
     const handleSubmit = (event) => {
-        // Prevents default window refresh
+        // Prevent default window refresh
         event.preventDefault();
 
          // Form validation
