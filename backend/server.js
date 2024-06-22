@@ -23,11 +23,11 @@ db.connect(err => {
     console.log('Connected to the database.');
 });
 
-// Function to test OpenAI connection
+// Test OpenAI connection
 const testOpenAIConnection = async () => {
     try {
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: "gpt-3.5-turbo",
+            model: "gpt-4-turbo",
             messages: [
                 { role: "system", content: "You are a helpful assistant." },
                 { role: "user", content: "This is a test prompt to check OpenAI connection." }
@@ -51,20 +51,42 @@ testOpenAIConnection();
 app.post('/ask', async (req, res) => {
     try {
         const { question } = req.body;
-        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: "gpt-3.5-turbo",
-            messages: [
-                { role: "system", content: "You are a helpful assistant called 'MySchool AI' on a school's career and technical education partner management website. Provide clear and concise answers to the user's questions. Only provide answers to questions that are relevant to the program." },
-                { role: "user", content: question }
-            ],
-            max_tokens: 150
-        }, {
-            headers: {
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                'Content-Type': 'application/json'
+
+        // Try to fetch data from the database
+        db.query('SELECT * FROM connections', async (err, data) => {
+            let formattedData = "No additional data available due to a database error.";
+            if (!err) {
+                // Format the data if no error occurs
+                formattedData = data.map(item => `ID: ${item.id}, Name: ${item.name}, Type: ${item.type}, Resources: ${item.resources}, Contact: ${item.contact}`).join('\n');
+            } else {
+                console.error('Error fetching data from the database:', err.stack);
             }
+
+            // Combine the prompt with either the fetched data or an error message
+            const combinedPrompt = `
+                The following is a list of partners and their details:
+                ${formattedData}
+                
+                User question: ${question}
+            `;
+
+            // Call the OpenAI API with the combined prompt
+            const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+                model: "gpt-4-turbo",
+                messages: [
+                    { role: "system", content: "You are a helpful assistant called 'MySchool AI' on a school's career and technical education partner management website. Provide clear and concise answers to the user's questions. Only provide answers to questions that are relevant to the program as well as the provided data." },
+                    { role: "user", content: combinedPrompt }
+                ],
+                max_tokens: 250
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            res.json({ answer: response.data.choices[0].message.content.trim() });
         });
-        res.json({ answer: response.data.choices[0].message.content.trim() });
     } catch (error) {
         console.error('Error communicating with OpenAI:', error.response ? error.response.data : error.message);
         res.status(500).json({ error: 'Failed to get response from OpenAI' });
