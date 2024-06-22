@@ -22,6 +22,7 @@ function Home() {
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
     const aiSectionRef = useRef(null);
+    const [isPulsing, setIsPulsing] = useState(false);
 
     const handleDelete = (id) => {
         axios.delete('http://localhost:8081/delete/'+id)
@@ -97,7 +98,11 @@ function Home() {
     };
 
     const scrollToAISection = () => {
-        aiSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+        if (aiSectionRef.current) {
+            aiSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+            setIsPulsing(true);
+            setTimeout(() => setIsPulsing(false), 3000);
+        }
     };
 
     return (
@@ -272,9 +277,12 @@ function Home() {
             
             {/* AI Help Section */}
             <HStack w='1500px' justifyContent='left' >
-                <Text fontSize='24px' fontWeight='bold' mb='15px'>Ask for Help</Text>
+                <Text fontSize='24px' fontWeight='bold' mb='15px' color='#7C3AED'>MySchool AI Assistant</Text>
             </HStack>
-            <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' mb='150px' ref={aiSectionRef}>
+            <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' mb='150px' ref={aiSectionRef} style={{
+                    transition: 'box-shadow 0.5s ease-in-out',
+                    boxShadow: isPulsing ? '0 0 20px 5px rgba(124, 58, 237, 0.7)' : 'none',
+                }}>
                 <form onSubmit={handleQuestionSubmit}>
                     <Text fontSize='20px' fontWeight='normal' mb='0px'>Ask a question:</Text>
                     <Input
@@ -295,6 +303,7 @@ function Home() {
             </Box>
               {/* Chat Bubble */}
               <Box position="fixed" bottom="20px" right="20px">
+              <Tooltip label="Need Help?" placement="top-start" bg="#7C3AED" color="white" hasArrow>
                 <IconButton
                     icon={<FaCommentDots />}
                     colorScheme="purple"
@@ -305,6 +314,7 @@ function Home() {
                 >
                     MS AI
                 </IconButton>
+                </Tooltip>
             </Box>
         </VStack>
       )
