@@ -18,13 +18,14 @@ function Home() {
     const [actionTip, setActionTip] = useState(false);
     const [backupTip, setBackupTip] = useState(false);
     const [resultsTip, setResultsTip] = useState(false);
+    const [question, setQuestion] = useState('');
+    const [answer, setAnswer] = useState('');
 
     const handleDelete = (id) => {
         axios.delete('http://localhost:8081/delete/'+id)
         .then(res => Navigate('/'))
         .catch(err => console.log(err))
         window.location.reload()
-    
     }
 
     useEffect(()=> {
@@ -85,6 +86,13 @@ function Home() {
         element.download = 'backup.txt'
         element.click()
      }
+
+     const handleQuestionSubmit = (e) => {
+        e.preventDefault();
+        axios.post('http://localhost:8081/ask', { question })
+            .then(res => setAnswer(res.data.answer))
+            .catch(err => console.error(err));
+    };
 
     return (
         <VStack bg='#EFEFF1' minW='1600px'>
@@ -241,7 +249,7 @@ function Home() {
             <HStack w='1500px' justifyContent='left' mt='60px'>
                 <Text fontSize='24px' fontWeight='bold' mb='15px'>Help & Instructions</Text>
             </HStack>
-            <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' mb='150px'>
+            <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' mb='50px'>
                 <Text fontSize='20px' fontWeight='normal' mb='0px'>ID Numbers:</Text>
                 <UnorderedList>
                     <ListItem fontWeight='normal' fontSize='16px'>
@@ -254,6 +262,30 @@ function Home() {
                     EX: There are 40 entries and 1 is deleted. If 1 entry is added. The new entry added has an ID number of 41.
                     </ListItem>
                 </UnorderedList>
+            </Box>
+            
+            {/* AI Help Section */}
+            <HStack w='1500px' justifyContent='left' >
+                <Text fontSize='24px' fontWeight='bold' mb='15px'>Ask for Help</Text>
+            </HStack>
+            <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' mb='150px'>
+                <form onSubmit={handleQuestionSubmit}>
+                    <Text fontSize='20px' fontWeight='normal' mb='0px'>Ask a question:</Text>
+                    <Input
+                        type='text'
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                        placeholder='Type your question here...'
+                        mb='10px'
+                    />
+                    <Button type='submit' borderRadius='5px' w='160px' h='40px' color='white' bg='#7C3AED' _hover>Submit</Button>
+                </form>
+                {answer && (
+                    <Box mt='20px'>
+                        <Text fontSize='20px' fontWeight='normal'>Answer:</Text>
+                        <Text fontSize='16px'>{answer}</Text>
+                    </Box>
+                )}
             </Box>
         </VStack>
       )

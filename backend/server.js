@@ -1,6 +1,7 @@
 const express = require('express')
 const mysql = require('mysql')
 const cors = require('cors')
+const axios = require('axios');
 require('dotenv').config()
 
 const app = express();
@@ -20,6 +21,54 @@ db.connect(err => {
         return;
     }
     console.log('Connected to the database.');
+});
+
+// Function to test OpenAI connection
+const testOpenAIConnection = async () => {
+    try {
+        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+            model: "gpt-3.5-turbo",
+            messages: [
+                { role: "system", content: "You are a helpful assistant." },
+                { role: "user", content: "This is a test prompt to check OpenAI connection." }
+            ],
+            max_tokens: 5
+        }, {
+            headers: {
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('Successfully connected to OpenAI API.');
+    } catch (error) {
+        console.error('Error connecting to OpenAI:', error.response ? error.response.data : error.message);
+    }
+};
+
+// Test OpenAI connection on server start
+testOpenAIConnection();
+
+app.post('/ask', async (req, res) => {
+    try {
+        const { question } = req.body;
+        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+            model: "gpt-3.5-turbo",
+            messages: [
+                { role: "system", content: "You are a helpful assistant called 'MySchool AI' on a school's career and technical education partner management website. Provide clear and concise answers to the user's questions. Only provide answers to questions that are relevant to the program." },
+                { role: "user", content: question }
+            ],
+            max_tokens: 150
+        }, {
+            headers: {
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        res.json({ answer: response.data.choices[0].message.content.trim() });
+    } catch (error) {
+        console.error('Error communicating with OpenAI:', error.response ? error.response.data : error.message);
+        res.status(500).json({ error: 'Failed to get response from OpenAI' });
+    }
 });
 
 app.get('/', (req, res) => {
