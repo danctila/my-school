@@ -23,6 +23,17 @@ db.connect(err => {
     console.log('Connected to the database.');
 });
 
+app.post('/login', (req, res) => {
+    const { password } = req.body;
+    console.log('Received password:', password); // Debug logging
+    console.log('Expected password:', process.env.ADMIN_PASSWORD); // Debug logging
+    if (password === process.env.ADMIN_PASSWORD) {
+        res.json({ success: true });
+    } else {
+        res.status(401).json({ success: false, message: 'Invalid password' });
+    }
+});
+
 // Test OpenAI connection
 const testOpenAIConnection = async () => {
     try {

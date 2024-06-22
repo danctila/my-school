@@ -24,6 +24,18 @@ function Home() {
     const aiSectionRef = useRef(null);
     const [isPulsing, setIsPulsing] = useState(false);
 
+    useEffect(() => {
+        // Check if logged in
+        const loggedIn = sessionStorage.getItem('loggedIn');
+        if (!loggedIn) {
+            Navigate('/login');
+        } else {
+            axios.get('http://localhost:8081/')
+                .then(res => setData(res.data))
+                .catch(err => console.log(err));
+        }
+    }, [Navigate]);
+
     const handleDelete = (id) => {
         axios.delete('http://localhost:8081/delete/'+id)
         .then(res => Navigate('/'))
@@ -105,12 +117,20 @@ function Home() {
         }
     };
 
+    const handleLogout = () => {
+        sessionStorage.removeItem('loggedIn');
+        Navigate('/login');
+    };
+
     return (
         <VStack bg='#EFEFF1' minW='1600px'>
-           <HStack>
-            <Text mt='60px' mb='130px' fontSize='32px' fontWeight='bold' color='#7C3AED'>MySchool{" "}</Text>
-            <Text mt='60px' mb='130px' fontSize='32px'>Career & Technical Partner Program</Text>
-        </HStack>
+            <HStack w='100%' m='0' pl='20px' pt='20px'>
+                <Button onClick={handleLogout} borderRadius='5px' w='120px' h='40px' color='white' bg='#7C3AED' _hover>Logout</Button>
+            </HStack>
+            <HStack>
+                <Text mt='60px' mb='130px' fontSize='32px' fontWeight='bold' color='#7C3AED'>MySchool{" "}</Text>
+                <Text mt='60px' mb='130px' fontSize='32px'>Career & Technical Partner Program</Text>
+            </HStack>
             <HStack justifyContent='space-between' py='10px' w='1500px'> { /* search and filter */ }
                 <HStack>
                 <Tooltip
