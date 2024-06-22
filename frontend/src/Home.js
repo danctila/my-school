@@ -1,8 +1,9 @@
 import axios from 'axios'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link as ReactRouterLink } from 'react-router-dom'
-import { Box, Button, HStack, Text, VStack, Input, Divider, TableContainer, Table, Thead, Tr, Th, Tbody, Td, UnorderedList, ListItem, Tooltip } from '@chakra-ui/react'
+import { Box, Button, HStack, Text, VStack, Input, Divider, TableContainer, Table, Thead, Tr, Th, Tbody, Td, UnorderedList, ListItem, Tooltip, IconButton } from '@chakra-ui/react'
 import { InfoOutlineIcon } from "@chakra-ui/icons";
+import { FaCommentDots } from 'react-icons/fa';
 
 function Home() {
     const Navigate = useNavigate()
@@ -20,6 +21,7 @@ function Home() {
     const [resultsTip, setResultsTip] = useState(false);
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
+    const aiSectionRef = useRef(null);
 
     const handleDelete = (id) => {
         axios.delete('http://localhost:8081/delete/'+id)
@@ -92,6 +94,10 @@ function Home() {
         axios.post('http://localhost:8081/ask', { question })
             .then(res => setAnswer(res.data.answer))
             .catch(err => console.error(err));
+    };
+
+    const scrollToAISection = () => {
+        aiSectionRef.current.scrollIntoView({ behavior: 'smooth' });
     };
 
     return (
@@ -268,7 +274,7 @@ function Home() {
             <HStack w='1500px' justifyContent='left' >
                 <Text fontSize='24px' fontWeight='bold' mb='15px'>Ask for Help</Text>
             </HStack>
-            <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' mb='150px'>
+            <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' mb='150px' ref={aiSectionRef}>
                 <form onSubmit={handleQuestionSubmit}>
                     <Text fontSize='20px' fontWeight='normal' mb='0px'>Ask a question:</Text>
                     <Input
@@ -286,6 +292,19 @@ function Home() {
                         <Text fontSize='16px'>{answer}</Text>
                     </Box>
                 )}
+            </Box>
+              {/* Chat Bubble */}
+              <Box position="fixed" bottom="20px" right="20px">
+                <IconButton
+                    icon={<FaCommentDots />}
+                    colorScheme="purple"
+                    borderRadius="50%"
+                    size="lg"
+                    onClick={scrollToAISection}
+                    aria-label="Chat with AI"
+                >
+                    MS AI
+                </IconButton>
             </Box>
         </VStack>
       )
