@@ -104,16 +104,33 @@ app.post('/ask', async (req, res) => {
     }
 });
 
-app.get('/', (req, res) => {
-    const sql = "SELECT * FROM connections";
+// Fetch all connections with resource descriptions
+app.get('/connections', (req, res) => {
+    const sql = `
+        SELECT c.id, c.name, c.type, r.ResourceType, r.ResourceDesc, c.contact
+        FROM connections c
+        JOIN Resources r ON c.resource_id = r.ResourceId
+    `;
     db.query(sql, (err, data) => {
-        if(err) return res.json(err);
+        if (err) return res.json(err);
         return res.json(data);
-    })
-})
+    });
+});
+
+// Fetch all resources
+app.get('/resources', (req, res) => {
+    const sql = "SELECT * FROM Resources";
+    db.query(sql, (err, data) => {
+        if (err) return res.json(err);
+        return res.json(data);
+    });
+});
 
 app.get('/user/:id', (req, res) => {
-    const sql = 'SELECT * FROM connections WHERE id =?'
+    const sql = `SELECT c.id, c.name, c.type, r.ResourceType, r.ResourceDesc, c.contact
+        FROM connections c
+        JOIN Resources r ON c.resource_id = r.ResourceId
+        WHERE c.id = ?`
     const id = req.params.id
     db.query(sql, [id], (err, data) => {
         if(err) return res.json(err)
@@ -125,33 +142,33 @@ app.get('/user/:id', (req, res) => {
 })
 
 app.post('/create', (req, res) => {
-    const sql = "INSERT INTO connections (`name`, `type`, `resources`, `contact`) VALUES (?)";
+    const sql = "INSERT INTO connections (`name`, `type`, `resource_id`, `contact`) VALUES (?)";
     const values = [
         req.body.name,
         req.body.type,
-        req.body.resources,
+        req.body.resourceType,
         req.body.contact
     ]
-    db.query(sql, [values], (err, data) =>{
-        if(err) return res.json(err);
-        return res.json("created")
+    db.query(sql, [values], (err, data) => {
+        if (err) return res.json(err);
+        return res.json("created");
     })
-})
+});
 
 app.put('/update/:id', (req, res) => {
-    const sql = "UPDATE connections set `name` =?, `type` =?, `resources` =?, `contact` =? WHERE id =?";
+    const sql = "UPDATE connections SET `name` = ?, `type` = ?, `resource_id` = ?, `contact` = ? WHERE id = ?";
     const id = req.params.id;
     const values = [
         req.body.name,
         req.body.type,
-        req.body.resources,
+        req.body.resourceType,
         req.body.contact
-    ]
-    db.query(sql, [...values, id], (err, data) =>{
-        if(err) return res.json(err);
-        return res.json("updated")
-    })
-})
+    ];
+    db.query(sql, [...values, id], (err, data) => {
+        if (err) return res.json(err);
+        return res.json("updated");
+    });
+});
 
 app.delete('/delete/:id', (req, res) => {
     const sql = "DELETE FROM connections WHERE id =?";

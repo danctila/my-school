@@ -1,14 +1,16 @@
 import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link as ReactRouterLink } from 'react-router-dom'
-import { Box, Button, HStack, Text, VStack, Input, Divider, TableContainer, Table, Thead, Tr, Th, Tbody, Td, UnorderedList, ListItem, Tooltip, IconButton } from '@chakra-ui/react'
-import { InfoOutlineIcon } from "@chakra-ui/icons";
+import { Box, Button, HStack, Text, VStack, Input, Divider, TableContainer, Table, Thead, Tr, Th, Tbody, Td, UnorderedList, ListItem, Tooltip, IconButton, Select, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react'
+import { InfoOutlineIcon, ChevronDownIcon  } from "@chakra-ui/icons";
 import { FaCommentDots } from 'react-icons/fa';
 
 function Home() {
     const Navigate = useNavigate()
     const [data, setData] = useState([])
+    const [resources, setResources] = useState([]);
     const [searchTerm, setSearchTerm] = useState('')
+    const [selectedResourceType, setSelectedResourceType] = useState('');
     const [nameAZFilter, setnameAZFilter] = useState(false)
     const [nameZAFilter, setnameZAFilter] = useState(false)
     const [IDIncFilter, setIDIncFilter] = useState(false)
@@ -30,8 +32,11 @@ function Home() {
         if (!loggedIn) {
             Navigate('/login');
         } else {
-            axios.get('http://localhost:8081/')
-                .then(res => setData(res.data))
+            axios.get('http://localhost:8081/connections')
+                .then(res => setData(res.data.sort((a, b) => a.id - b.id)))
+                .catch(err => console.log(err));
+            axios.get('http://localhost:8081/resources')
+                .then(res => setResources(res.data))
                 .catch(err => console.log(err));
         }
     }, [Navigate]);
@@ -42,12 +47,6 @@ function Home() {
         .catch(err => console.log(err))
         window.location.reload()
     }
-
-    useEffect(()=> {
-        axios.get('http://localhost:8081/')
-        .then(res => setData(res.data))
-        .catch(err => console.log(err))
-    }, [])
 
     const handleCheckbox = (checkbox) => {
         if(checkbox.target.value === '1'){
@@ -91,9 +90,7 @@ function Home() {
      }
 
      const downloadBackup = () => {
-        let stringData = data.map(function(item) {
-            return item.name + ', ' + item.type + ', ' + item.resources + ', ' + item.contact 
-        })
+        let stringData = data.map(item => `${item.name}, ${item.type}, ${item.ResourceType}, ${item.ResourceDesc}, ${item.contact}`);
         let csvContent = stringData.join('\n\n')
         let element = document.createElement('a')
         let file = new Blob([csvContent], {type: 'text/plain'})
@@ -120,6 +117,19 @@ function Home() {
     const handleLogout = () => {
         sessionStorage.removeItem('loggedIn');
         Navigate('/login');
+    };
+
+    const handleResourceTypeChange = (resourceType) => {
+        setSelectedResourceType(resourceType);
+        if (resourceType === '') {
+            axios.get('http://localhost:8081/connections')
+                .then(res => setData(res.data.sort((a, b) => a.id - b.id)))
+                .catch(err => console.log(err));
+        } else {
+            axios.get(`http://localhost:8081/connections?resourceType=${resourceType}`)
+                .then(res => setData(res.data.filter(item => item.ResourceType === resourceType).sort((a, b) => a.id - b.id)))
+                .catch(err => console.log(err));
+        }
     };
 
     return (
@@ -200,12 +210,26 @@ function Home() {
                 <Table size='sm'>
                     <Thead>
                         <Tr>
-                            <Th color='black' fontSize='20px' fontWeight='normal'>ID  </Th>
-                            <Th color='black' fontSize='20px' fontWeight='normal'>PARTNER NAME</Th>
-                            <Th color='black' fontSize='20px' fontWeight='normal'>TYPE</Th>
-                            <Th color='black' fontSize='20px' fontWeight='normal'>RESOURCES</Th>
-                            <Th color='black'fontSize='20px' fontWeight='normal'>CONTACT</Th>
-                            <Th color='black' fontSize='20px' fontWeight='normal'>
+                            <Th color='black' fontSize='20px' fontWeight='normal' w='10%'>ID</Th>
+                            <Th color='black' fontSize='20px' fontWeight='normal' w='20%'>PARTNER NAME</Th>
+                            <Th color='black' fontSize='20px' fontWeight='normal' w='20%'>TYPE</Th>
+                            <Th color='black' fontSize='20px' fontWeight='normal' w='20%'>
+                                <Menu>
+                                    <MenuButton as={Button} fontSize='20px' fontWeight='normal' py='0' px='3' rightIcon={<ChevronDownIcon  />}  bg='white'>
+                                        {selectedResourceType || 'RESOURCES'}
+                                    </MenuButton>
+                                    <MenuList>
+                                        <MenuItem onClick={() => handleResourceTypeChange('')}>All</MenuItem>
+                                        {resources.map((resource) => (
+                                            <MenuItem key={resource.ResourceId} onClick={() => handleResourceTypeChange(resource.ResourceType)}>
+                                                {resource.ResourceType}
+                                            </MenuItem>
+                                        ))}
+                                    </MenuList>
+                                </Menu>
+                            </Th>
+                            <Th color='black' fontSize='20px' fontWeight='normal' w='20%'>CONTACT</Th>
+                            <Th color='black' fontSize='20px' fontWeight='normal' w='10%'>
                                 <Tooltip
                                     bg="#7C3AED"
                                     color="white"
@@ -229,23 +253,25 @@ function Home() {
                         if (searchTerm === '') {
                             return data
                         }
-                        else if (String(data.id).toLowerCase().includes(searchTerm.toLowerCase()) || data.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                                data.type.toLowerCase().includes(searchTerm.toLowerCase()) || data.resources.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                                data.contact.toLowerCase().includes(searchTerm.toLowerCase())) {
-                            return data
+                        else if (String(data.id).toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        data.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        data.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        data.ResourceDesc.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        data.contact.toLowerCase().includes(searchTerm.toLowerCase())) {
+                                return data;
                         }
                     }).map((data, i) => (
-                        <Tr color='black'>
-                            <Td fontSize='14px'>{data.id}</Td>
-                            <Td fontSize='14px'>{data.name}</Td>
-                            <Td fontSize='14px'>{data.type}</Td>
-                            <Td fontSize='14px'>{data.resources}</Td>
-                            <Td fontSize='14px'>{data.contact}</Td>
-                            <Td>
-                                <Button fontSize='14px'fontWeight='normal' mx='2px' color='white' borderRadius='3px' w='70px' h='30px' bg='#3A77ED' as={ReactRouterLink} to={`/update/${data.id}`} _hover>UPDATE</Button>
-                                <Button fontSize='14px'fontWeight='normal' mx='2px'color='white' borderRadius='3px' w='70px' h='30px' bg='#ED3A3A' onClick={e => handleDelete(data.id)} _hover>REMOVE</Button>
-                            </Td>
-                        </Tr>
+                        <Tr color='black' key={i}>
+                                <Td fontSize='14px' w='10%'>{data.id}</Td>
+                                <Td fontSize='14px' w='20%'>{data.name}</Td>
+                                <Td fontSize='14px' w='20%'>{data.type}</Td>
+                                <Td fontSize='14px' w='20%'>{data.ResourceDesc}</Td>
+                                <Td fontSize='14px' w='20%'>{data.contact}</Td>
+                                <Td w='10%'> 
+                                    <Button fontSize='14px' fontWeight='normal' mx='2px' color='white' borderRadius='3px' w='70px' h='30px' bg='#3A77ED' as={ReactRouterLink} to={`/update/${data.id}`} _hover>UPDATE</Button>
+                                    <Button fontSize='14px' fontWeight='normal' mx='2px' color='white' borderRadius='3px' w='70px' h='30px' bg='#ED3A3A' onClick={() => handleDelete(data.id)} _hover>REMOVE</Button>
+                                </Td>
+                            </Tr>
                     ))}
                     </Tbody>
                 </Table>

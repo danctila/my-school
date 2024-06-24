@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Box, Button, Center, FormLabel, HStack, Heading, Input, Tooltip } from '@chakra-ui/react'
+import { Box, Button, Center, FormLabel, HStack, Heading, Input, Tooltip, Select } from '@chakra-ui/react'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 function Create() {
@@ -9,7 +9,7 @@ function Create() {
     // Hold current state of input form
     const [name, setName] = useState('')
     const [type, setType] = useState('')
-    const [resources, setResources] = useState('')
+    const [resourceType, setResourceType] = useState('');
     const [contact, setContact] = useState('')
 
     // Hold current state of tooltip
@@ -18,21 +18,26 @@ function Create() {
     // Holds form error messages to be displayed under each respective input field
     const [nameError, setNameError] = useState('');
     const [typeError, setTypeError] = useState('');
-    const [resourcesError, setResourcesError] = useState('');
+    const [resourceTypeError, setResourceTypeError] = useState('');
     const [contactError, setContactError] = useState('');
     const [duplicateError, setDuplicateError] = useState('')
 
     // Hold current state of the database
     const [data, setData] = useState([])
+    const [resources, setResources] = useState([]);
     
     // Route navigation
     const navigate = useNavigate()
 
-    useEffect(()=> {
-        axios.get('http://localhost:8081/')
-        .then(res => setData(res.data))
-        .catch(err => console.log(err))
-    }, [])
+    useEffect(() => {
+        axios.get('http://localhost:8081/connections')
+            .then(res => setData(res.data))
+            .catch(err => console.log(err));
+        
+        axios.get('http://localhost:8081/resources')
+            .then(res => setResources(res.data))
+            .catch(err => console.log(err));
+    }, []);
 
 
     // Handle form submission
@@ -55,11 +60,11 @@ function Create() {
             setTypeError('');
         }
 
-        if (!resources.trim()) {
-            setResourcesError('Resources is required');
+        if (!resourceType.trim()) {
+            setResourceTypeError('Resource type is required');
             return;
         } else {
-            setResourcesError('');
+            setResourceTypeError('');
         }
 
         if (!contact.trim()) {
@@ -80,7 +85,7 @@ function Create() {
         }
 
         // Adds to database if form is validated using current users ID with /create server endpoint
-        axios.post('http://localhost:8081/create', {name, type, resources, contact})
+        axios.post('http://localhost:8081/create', { name, type, resourceType, contact })
         .then(res => {
             navigate('/');
         }).catch(err => console.log(err))
@@ -125,10 +130,16 @@ function Create() {
                         <span className='text-danger'>{typeError}</span>
                     </Box>
                     <Box mb='5px'>
-                        <FormLabel htmlFor=''>Resources</FormLabel>
-                        <Input type='text' placeholder='Enter Resources' className='form-control' 
-                            onChange={e => setResources(e.target.value)}/>
-                        <span className='text-danger'>{resourcesError}</span>
+                    <FormLabel htmlFor=''>Resource Type</FormLabel>
+                        <Select placeholder='Select Resource Type' className='form-control' 
+                            onChange={e => setResourceType(e.target.value)}>
+                            {resources.map(resource => (
+                                <option key={resource.ResourceId} value={resource.ResourceId}>
+                                    {resource.ResourceType}
+                                </option>
+                            ))}
+                        </Select>
+                        <span className='text-danger'>{resourceTypeError}</span>
                     </Box>
                     <Box mb='5px'>
                         <FormLabel htmlFor=''>Contact</FormLabel>

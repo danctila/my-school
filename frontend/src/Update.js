@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
-import { Box, Button, Center, FormLabel, HStack, Heading, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react'
+import { Box, Button, Center, FormLabel, HStack, Heading, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tooltip, Tr, Select  } from '@chakra-ui/react'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 function Update() {
@@ -9,20 +9,22 @@ function Update() {
     // Hold current state of input form
     const [name, setName] = useState('')
     const [type, setType] = useState('')
-    const [resources, setResources] = useState('')
+    const [resourceType, setResourceType] = useState('');
     const [contact, setContact] = useState('')
 
     // Hold current state of tooltip
     const [updateTip, setUpdateTip] = useState(false)
 
+    // Hold current state of the resources table
+    const [resources, setResources] = useState([])
 
     // Hold user data fetched from /user endpoint
-    const [user, setUser] = useState({})
+    const [user, setUser] = useState([])
 
     // Hold form error messages to be displayed under each respective input field
     const [nameError, setNameError] = useState('');
     const [typeError, setTypeError] = useState('');
-    const [resourcesError, setResourcesError] = useState('');
+    const [resourceTypeError, setResourceTypeError] = useState('');
     const [contactError, setContactError] = useState('');
 
     // Route navigation
@@ -37,28 +39,28 @@ function Update() {
         event.preventDefault();
 
          // Form validation
-         if (!name.trim()) {
+         if (!name?.trim()) {
             setNameError('Name is required');
             return;
         } else {
             setNameError('');
         }
 
-        if (!type.trim()) {
+        if (!type?.trim()) {
             setTypeError('Type is required');
             return;
         } else {
             setTypeError('');
         }
 
-        if (!resources.trim()) {
-            setResourcesError('Resources is required');
+        if (!resourceType?.trim()) {
+            setResourceTypeError('Resource type is required');
             return;
         } else {
-            setResourcesError('');
+            setResourceTypeError('');
         }
 
-        if (!contact.trim()) {
+        if (!contact?.trim()) {
             setContactError('Contact is required');
             return;
         } else {
@@ -66,7 +68,7 @@ function Update() {
         }
 
         // Updates database if form is validated using current users ID with /update server endpoint
-        axios.put('http://localhost:8081/update/'+id, {name, type, resources, contact})
+        axios.put('http://localhost:8081/update/'+id, { name, type, resourceType, contact })
         .then(res => {
             navigate('/');
         }).catch(err => console.log(err))
@@ -75,9 +77,19 @@ function Update() {
     // Pulls current user when update page is loaded
     useEffect(() => {
         axios.get('http://localhost:8081/user/'+id)
-        .then(res => setUser(res.data))
-        .catch(err => console.log(err))
-    },[])
+        .then(res => {
+            setUser(res.data)
+            setName(res.data.name || '');
+            setType(res.data.type || '');
+            setResourceType(res.data.resource_id || '');
+            setContact(res.data.contact || '');
+        })
+        .catch(err => console.log(err));
+
+        axios.get('http://localhost:8081/resources')
+            .then(res => setResources(res.data))
+            .catch(err => console.log(err));    
+    }, []);
 
   return (
    
@@ -111,7 +123,7 @@ function Update() {
                             <Th color='black' fontSize='15px' fontWeight='normal'>ID  </Th>
                             <Th color='black' fontSize='15px' fontWeight='normal'>PARTNER NAME</Th>
                             <Th color='black' fontSize='15px' fontWeight='normal'>TYPE</Th>
-                            <Th color='black' fontSize='15px' fontWeight='normal'>RESOURCES</Th>
+                            <Th color='black' fontSize='15px' fontWeight='normal'>RESOURCE TYPE</Th>
                             <Th color='black'fontSize='15px' fontWeight='normal'>CONTACT</Th>
                         </Tr>
                     </Thead>
@@ -127,7 +139,7 @@ function Update() {
                             {user.type}
                             </Td>
                             <Td>
-                            {user.resources}
+                            {user.ResourceDesc}
                             </Td>
                             <Td>
                             {user.contact}
@@ -142,25 +154,31 @@ function Update() {
                 <Box mb='5px'>
                     <FormLabel htmlFor=''>Name</FormLabel>
                     <Input type='text' placeholder='Enter Name' className='form-control' 
-                    onChange={e => setName(e.target.value)}/>
+                    onChange={e => setName(e.target.value)} value={name}/>
                     <span className='text-danger'>{nameError}</span>
                 </Box>
                 <Box mb='5px'>
                     <FormLabel htmlFor=''>Type</FormLabel>
                     <Input type='text' placeholder='Enter Type' className='form-control' 
-                     onChange={e => setType(e.target.value)}/>
+                     onChange={e => setType(e.target.value)} value={type}/>
                       <span className='text-danger'>{typeError}</span>
                 </Box>
                 <Box mb='5px'>
-                    <FormLabel htmlFor=''>Resources</FormLabel>
-                    <Input type='text' placeholder='Enter Resources' className='form-control' 
-                     onChange={e => setResources(e.target.value)}/>
-                     <span className='text-danger'>{resourcesError}</span>
+                <FormLabel htmlFor=''>Resource Type</FormLabel>
+                        <Select placeholder='Select Resource Type' className='form-control' 
+                            value={resourceType} onChange={e => setResourceType(e.target.value)}>
+                            {resources.map(resource => (
+                                <option key={resource.ResourceId} value={resource.ResourceId}>
+                                    {resource.ResourceType}
+                                </option>
+                            ))}
+                        </Select>
+                        <span className='text-danger'>{resourceTypeError}</span>
                 </Box>
                 <Box mb='5px'>
                     <FormLabel htmlFor=''>Contact</FormLabel>
                     <Input type='text' placeholder='Enter Contact' className='form-control' 
-                     onChange={e => setContact(e.target.value)}/>
+                     onChange={e => setContact(e.target.value)} value={contact}/>
                      <span className='text-danger'>{contactError}</span>
                 </Box>
                 <HStack spacing='15px'>
