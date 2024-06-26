@@ -36,6 +36,7 @@ function Update() {
     // Route navigation
     const navigate = useNavigate()
 
+    // Pulls data from connections and resources tables on page load
     useEffect(() => {
         axios.get('http://localhost:8081/connections')
             .then(res => setData(res.data))
@@ -110,7 +111,7 @@ function Update() {
                 setDuplicateResourceError('');
             }
 
-            // Add the new resource type to the database
+            // Add the new resource type to the database if not a duplicate 
             try {
                 const res = await axios.post('http://localhost:8081/resources', { resourceType: newResourceType });
                 finalResourceType = res.data.resource_id; // Assuming the response includes the new resource_id
@@ -127,7 +128,7 @@ function Update() {
         }).catch(err => console.log(err))
     }
 
-    // Pulls current user when update page is loaded
+    // Pull current user on page load
     useEffect(() => {
         axios.get('http://localhost:8081/user/'+id)
         .then(res => {
@@ -169,6 +170,7 @@ function Update() {
             </Tooltip>
         <Heading fontWeight='bold'>Update Partner</Heading>
         </HStack>
+
         {/* Current partner being edited table */}
         <TableContainer>
                 <Table size='sm'>

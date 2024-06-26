@@ -26,8 +26,8 @@ function Home() {
     const aiSectionRef = useRef(null);
     const [isPulsing, setIsPulsing] = useState(false);
 
+    // Check if user is logged in
     useEffect(() => {
-        // Check if logged in
         const loggedIn = sessionStorage.getItem('loggedIn');
         if (!loggedIn) {
             Navigate('/login');
@@ -36,6 +36,13 @@ function Home() {
         }
     }, [Navigate]);
 
+    // Logout user
+    const handleLogout = () => {
+        sessionStorage.removeItem('loggedIn');
+        Navigate('/login');
+    };
+
+    // Fetch data from connections and resources table
     const fetchData = () => {
         axios.get('http://localhost:8081/connections')
             .then(res => setData(res.data.sort((a, b) => a.id - b.id)))
@@ -46,6 +53,7 @@ function Home() {
             .catch(err => console.log(err));
     };
 
+    // Delete user with ID
     const handleDelete = (id) => {
         axios.delete('http://localhost:8081/delete/' + id)
             .then(res => {
@@ -56,7 +64,19 @@ function Home() {
             .catch(err => console.log(err));
     };
     
+    // Handle resource type change
+    const handleResourceTypeChange = (resourceType) => {
+        setSelectedResourceType(resourceType);
+        if (resourceType === '') {
+            fetchData();
+        } else {
+            axios.get(`http://localhost:8081/connections?resourceType=${resourceType}`)
+                .then(res => setData(res.data.filter(item => item.resource_type === resourceType).sort((a, b) => a.id - b.id)))
+                .catch(err => console.log(err));
+        }
+    };
 
+    // Handle filter checkboxes
     const handleCheckbox = (checkbox) => {
         if(checkbox.target.value === '1'){
             setnameAZFilter(true)
@@ -98,6 +118,7 @@ function Home() {
         }
      }
 
+     // Handle backup file download
      const downloadBackup = () => {
         let stringData = data.map(item => `${item.name}, ${item.type}, ${item.resource_type}, ${item.specific_resource_desc}, ${item.contact}`);
         let csvContent = stringData.join('\n\n')
@@ -108,6 +129,7 @@ function Home() {
         element.click()
      }
 
+     // Handle MySchool AI question submission
      const handleQuestionSubmit = (e) => {
         e.preventDefault();
         axios.post('http://localhost:8081/ask', { question })
@@ -115,27 +137,12 @@ function Home() {
             .catch(err => console.error(err));
     };
 
+    // Handle chat bubble click to MySchool AI
     const scrollToAISection = () => {
         if (aiSectionRef.current) {
             aiSectionRef.current.scrollIntoView({ behavior: 'smooth' });
             setIsPulsing(true);
             setTimeout(() => setIsPulsing(false), 3000);
-        }
-    };
-
-    const handleLogout = () => {
-        sessionStorage.removeItem('loggedIn');
-        Navigate('/login');
-    };
-
-    const handleResourceTypeChange = (resourceType) => {
-        setSelectedResourceType(resourceType);
-        if (resourceType === '') {
-            fetchData();
-        } else {
-            axios.get(`http://localhost:8081/connections?resourceType=${resourceType}`)
-                .then(res => setData(res.data.filter(item => item.resource_type === resourceType).sort((a, b) => a.id - b.id)))
-                .catch(err => console.log(err));
         }
     };
 
@@ -148,7 +155,8 @@ function Home() {
                 <Text mt='60px' mb='130px' fontSize='32px' fontWeight='bold' color='#7C3AED'>MySchool{" "}</Text>
                 <Text mt='60px' mb='130px' fontSize='32px'>Career & Technical Partner Program</Text>
             </HStack>
-            <HStack justifyContent='space-between' py='10px' w='1500px'> { /* search and filter */ }
+            { /* search and filter */ }
+            <HStack justifyContent='space-between' py='10px' w='1500px'> 
                 <HStack>
                 <Tooltip
                 bg="#7C3AED"
@@ -183,14 +191,19 @@ function Home() {
                 />
               </Tooltip>
                     <Text my='0px'fontWeight='bold' fontSize='24px'>FILTER:</Text>
-                    <Button borderRadius='5px' value='0' bg={filter ? '#3AED3A': 'white'} _hover onClick={handleCheckbox.bind(this)}>NONE</Button>{/*no filter = filter 0*/}
-                    <Button borderRadius='5px' value='1' bg={nameAZFilter ? '#3AED3A': 'white'} _hover checked={nameAZFilter} onClick={handleCheckbox.bind(this)}>NAME A-Z</Button>{/*Name A-Z = filter 1*/}
-                    <Button borderRadius='5px'value='2' bg={nameZAFilter ? '#3AED3A': 'white'} _hover checked={nameZAFilter} onClick={handleCheckbox.bind(this)}>NAME Z-A</Button>{/*Name Z-A = filter 2*/}
-                    <Button borderRadius='5px' value='3' bg={IDIncFilter ? '#3AED3A': 'white'} _hover checked={IDIncFilter} onClick={handleCheckbox.bind(this)}>ID INC</Button>{/*ID INC = filter 3*/}
-                    <Button borderRadius='5px'value='4' bg={IDDecFilter ? '#3AED3A': 'white'} _hover checked={IDDecFilter} onClick={handleCheckbox.bind(this)}>ID DEC</Button>{/*ID DEC = filter 4*/}
+                {/*no filter = filter 0*/}
+                    <Button borderRadius='5px' value='0' bg={filter ? '#3AED3A': 'white'} _hover onClick={handleCheckbox.bind(this)}>NONE</Button>
+                {/*Name A-Z = filter 1*/}
+                    <Button borderRadius='5px' value='1' bg={nameAZFilter ? '#3AED3A': 'white'} _hover checked={nameAZFilter} onClick={handleCheckbox.bind(this)}>NAME A-Z</Button>
+                {/*Name Z-A = filter 2*/}
+                    <Button borderRadius='5px'value='2' bg={nameZAFilter ? '#3AED3A': 'white'} _hover checked={nameZAFilter} onClick={handleCheckbox.bind(this)}>NAME Z-A</Button>
+                {/*ID INC = filter 3*/}
+                    <Button borderRadius='5px' value='3' bg={IDIncFilter ? '#3AED3A': 'white'} _hover checked={IDIncFilter} onClick={handleCheckbox.bind(this)}>ID INC</Button>
+                {/*ID DEC = filter 4*/}
+                    <Button borderRadius='5px'value='4' bg={IDDecFilter ? '#3AED3A': 'white'} _hover checked={IDDecFilter} onClick={handleCheckbox.bind(this)}>ID DEC</Button>
                 </HStack>
             </HStack>
-            <TableContainer w='1510px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2'>
+            <TableContainer w='1700px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' >
                  <HStack pt='15px' px='35px' w='100%' justifyContent='space-between' >
                 <HStack>
                 <Tooltip
@@ -216,28 +229,29 @@ function Home() {
                     <Button borderRadius='5px'  my='0px' w='80px' h='40px' as={ReactRouterLink} to='/create' bg='#3AED3A' _hover >Add+</Button>
                 </HStack>
                 </HStack>
-                <Divider borderColor='black' h='1px' w='1505px' orientation='horizontal'/>
-                <Table size='sm'>
+                <Divider borderColor='black' h='1px' w='1695px' orientation='horizontal'/>
+                <Table size='sm' >
                     <Thead>
                         <Tr>
                             <Th color='black' fontSize='20px' fontWeight='normal' w='10%'>ID</Th>
                             <Th color='black' fontSize='20px' fontWeight='normal' w='20%'>PARTNER NAME</Th>
-                            <Th color='black' fontSize='20px' fontWeight='normal' w='20%'>TYPE</Th>
+                            <Th color='black' fontSize='20px' fontWeight='normal' w='20%'>PARTNER TYPE</Th>
                             <Th color='black' fontSize='20px' fontWeight='normal' w='20%'>
                                 <Menu>
-                                    <MenuButton as={Button} fontSize='20px' fontWeight='normal' py='0' px='3' rightIcon={<ChevronDownIcon  />}  bg='white'>
-                                        {selectedResourceType || 'RESOURCES'}
+                                    <MenuButton as={Button} fontSize='20px' fontWeight='normal' p='0' rightIcon={<ChevronDownIcon />} bg='white'>
+                                        {selectedResourceType || 'RESOURCE TYPE'}
                                     </MenuButton>
                                     <MenuList>
                                         <MenuItem onClick={() => handleResourceTypeChange('')}>All</MenuItem>
                                         {resources.map((resource) => (
                                             <MenuItem key={resource.resource_id} onClick={() => handleResourceTypeChange(resource.resource_type)}>
-                                                 {resource.resource_type}
+                                                {resource.resource_type}
                                             </MenuItem>
                                         ))}
                                     </MenuList>
                                 </Menu>
                             </Th>
+                            <Th color='black' fontSize='20px' fontWeight='normal' w='20%'>RESOURCES</Th>
                             <Th color='black' fontSize='20px' fontWeight='normal' w='20%'>CONTACT</Th>
                             <Th color='black' fontSize='20px' fontWeight='normal' w='10%'>
                                 <Tooltip
@@ -275,6 +289,7 @@ function Home() {
                                 <Td fontSize='14px' w='10%'>{data.id}</Td>
                                 <Td fontSize='14px' w='20%'>{data.name}</Td>
                                 <Td fontSize='14px' w='20%'>{data.type}</Td>
+                                <Td fontSize='14px' w='20%'>{data.resource_type}</Td>
                                 <Td fontSize='14px' w='20%'>{data.specific_resource_desc}</Td>
                                 <Td fontSize='14px' w='20%'>{data.contact}</Td>
                                 <Td w='10%'> 
@@ -357,9 +372,10 @@ function Home() {
                     </Box>
                 )}
             </Box>
-              {/* Chat Bubble */}
-              <Box position="fixed" bottom="20px" right="20px">
-              <Tooltip label="Need Help?" placement="top-start" bg="#7C3AED" color="white" hasArrow>
+
+            {/* Chat Bubble */}
+            <Box position="fixed" bottom="20px" right="20px">
+            <Tooltip label="Need Help?" placement="top-start" bg="#7C3AED" color="white" hasArrow>
                 <IconButton
                     icon={<FaCommentDots />}
                     colorScheme="purple"

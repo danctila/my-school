@@ -8,6 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Connect to DB using .env credentials 
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -15,24 +16,13 @@ const db = mysql.createConnection({
     database: process.env.DB_NAME
 })
 
+// Test DB connection on server start
 db.connect(err => {
     if (err) {
         console.error('Error connecting to the database:', err.stack);
         return;
     }
     console.log('Connected to the database.');
-});
-
-app.post('/login', (req, res) => {
-    console.log('Login request received:', req.body); // Log request body
-    const { password } = req.body;
-    console.log('Received password:', password); // Debug logging
-    console.log('Expected password:', process.env.ADMIN_PASSWORD); // Debug logging
-    if (password === process.env.ADMIN_PASSWORD) {
-        res.json({ success: true });
-    } else {
-        res.status(401).json({ success: false, message: 'Invalid password' });
-    }
 });
 
 // Test OpenAI connection
@@ -60,110 +50,18 @@ const testOpenAIConnection = async () => {
 // Test OpenAI connection on server start
 testOpenAIConnection();
 
-// app.post('/ask', async (req, res) => {
-//     try {
-//         const { question } = req.body;
-
-//         // Try to fetch data from the database
-//         db.query('SELECT * FROM connections', async (err, data) => {
-//             let formattedData = "No additional data available due to a database error.";
-//             if (!err) {
-//                 // Format the data if no error occurs
-//                 formattedData = data.map(item => `ID: ${item.id}, Name: ${item.name}, Type: ${item.type}, Resources: ${item.resources}, Contact: ${item.contact}`).join('\n');
-//             } else {
-//                 console.error('Error fetching data from the database:', err.stack);
-//             }
-
-//             // Combine the prompt with either the fetched data or an error message
-//             const combinedPrompt = `
-//                 The following is a list of partners and their details:
-//                 ${formattedData}
-                
-//                 User question: ${question}
-//             `;
-
-//             // Call the OpenAI API with the combined prompt
-//             const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-//                 model: "gpt-4-turbo",
-//                 messages: [
-//                     { role: "system", content: "You are a helpful assistant called 'MySchool AI' on a school's career and technical education partner management website. Provide clear and concise answers to the user's questions. Only provide answers to questions that are relevant to the program as well as the provided data." },
-//                     { role: "user", content: combinedPrompt }
-//                 ],
-//                 max_tokens: 250
-//             }, {
-//                 headers: {
-//                     'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-//                     'Content-Type': 'application/json'
-//                 }
-//             });
-
-//             res.json({ answer: response.data.choices[0].message.content.trim() });
-//         });
-//     } catch (error) {
-//         console.error('Error communicating with OpenAI:', error.response ? error.response.data : error.message);
-//         res.status(500).json({ error: 'Failed to get response from OpenAI' });
-//     }
-// });
-
-app.post('/ask', async (req, res) => {
-    console.log('Ask request received:', req.body); // Log request body
-    try {
-        const { question } = req.body;
-        db.query(`
-            SELECT c.id, c.name, c.type, r.resource_type, pr.specific_resource_desc, c.contact
-            FROM connections c
-            JOIN partner_resources pr ON c.id = pr.partner_id
-            JOIN resources r ON pr.resource_id = r.resource_id
-        `, async (err, data) => {
-            let formattedData = "No additional data available due to a database error.";
-            if (!err) {
-                formattedData = data.map(item => `ID: ${item.id}, Name: ${item.name}, Type: ${item.type}, Resource Type: ${item.resource_type}, Specific Resource Description: ${item.specific_resource_desc}, Contact: ${item.contact}`).join('\n');
-            } else {
-                console.error('Error fetching data from the database:', err.stack);
-            }
-
-            const combinedPrompt = `
-                The following is a list of partners and their details:
-                ${formattedData}
-                
-                User question: ${question}
-            `;
-
-            const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-                model: "gpt-4-turbo",
-                messages: [
-                    { role: "system", content: "You are a helpful assistant called 'MySchool AI' on a school's career and technical education partner management website. Provide clear and concise answers to the user's questions. Only provide answers to questions that are relevant to the program as well as the provided data." },
-                    { role: "user", content: combinedPrompt }
-                ],
-                max_tokens: 250
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            res.json({ answer: response.data.choices[0].message.content.trim() });
-        });
-    } catch (error) {
-        console.error('Error communicating with OpenAI:', error.response ? error.response.data : error.message);
-        res.status(500).json({ error: 'Failed to get response from OpenAI' });
+// Handle login request
+app.post('/login', (req, res) => {
+    console.log('Login request received:', req.body); // Log request body
+    const { password } = req.body;
+    console.log('Received password:', password); // Log recieved login attempt
+    console.log('Expected password:', process.env.ADMIN_PASSWORD); // Log expected login
+    if (password === process.env.ADMIN_PASSWORD) {
+        res.json({ success: true });
+    } else {
+        res.status(401).json({ success: false, message: 'Invalid password' });
     }
 });
-
-
-// // Fetch all connections with resource descriptions
-// app.get('/connections', (req, res) => {
-//     const sql = `
-//         SELECT c.id, c.name, c.type, r.ResourceType, r.ResourceDesc, c.contact
-//         FROM connections c
-//         JOIN Resources r ON c.resource_id = r.ResourceId
-//     `;
-//     db.query(sql, (err, data) => {
-//         if (err) return res.json(err);
-//         return res.json(data);
-//     });
-// });
 
 // Fetch all connections with resource descriptions
 app.get('/connections', (req, res) => {
@@ -190,31 +88,18 @@ app.get('/resources', (req, res) => {
     });
 });
 
+// Add resource type to db
 app.post('/resources', (req, res) => {
+    console.log('Add resources request received'); // Log request
     const sql = "INSERT INTO resources (`resource_type`) VALUES (?)";
     const values = [
         req.body.resourceType
     ];
     db.query(sql, [values], (err, data) => {
         if (err) return res.json(err);
-        return res.json({ resource_id: data.insertId }); // Return the new resource_id
+        return res.json({ resource_id: data.insertId }); 
     });
 });
-
-// app.get('/user/:id', (req, res) => {
-//     const sql = `SELECT c.id, c.name, c.type, r.ResourceType, r.ResourceDesc, c.contact
-//         FROM connections c
-//         JOIN Resources r ON c.resource_id = r.ResourceId
-//         WHERE c.id = ?`
-//     const id = req.params.id
-//     db.query(sql, [id], (err, data) => {
-//         if(err) return res.json(err)
-//         if(data.length === 0) {
-//             return res.status(404).json({message: 'User not found'})
-//         }
-//         return res.json(data[0])
-//     })
-// })
 
 // Fetch a single user by ID
 app.get('/user/:id', (req, res) => {
@@ -236,20 +121,7 @@ app.get('/user/:id', (req, res) => {
     });
 });
 
-// app.post('/create', (req, res) => {
-//     const sql = "INSERT INTO connections (`name`, `type`, `resource_id`, `contact`) VALUES (?)";
-//     const values = [
-//         req.body.name,
-//         req.body.type,
-//         req.body.resourceType,
-//         req.body.contact
-//     ]
-//     db.query(sql, [values], (err, data) => {
-//         if (err) return res.json(err);
-//         return res.json("created");
-//     })
-// });
-
+// Create new partner in db
 app.post('/create', (req, res) => {
     console.log('Create request received:', req.body); // Log request body
     const sqlConnection = "INSERT INTO connections (`name`, `type`, `contact`) VALUES (?, ?, ?)";
@@ -274,21 +146,7 @@ app.post('/create', (req, res) => {
     });
 });
 
-// app.put('/update/:id', (req, res) => {
-//     const sql = "UPDATE connections SET `name` = ?, `type` = ?, `resource_id` = ?, `contact` = ? WHERE id = ?";
-//     const id = req.params.id;
-//     const values = [
-//         req.body.name,
-//         req.body.type,
-//         req.body.resourceType,
-//         req.body.contact
-//     ];
-//     db.query(sql, [...values, id], (err, data) => {
-//         if (err) return res.json(err);
-//         return res.json("updated");
-//     });
-// });
-
+// Update a single user by ID
 app.put('/update/:id', (req, res) => {
     console.log('Update request received:', req.body, req.params.id); // Log request body and params
     const sqlConnection = "UPDATE connections SET `name` = ?, `type` = ?, `contact` = ? WHERE id = ?";
@@ -302,8 +160,8 @@ app.put('/update/:id', (req, res) => {
         if (err) return res.json(err);
         const sqlPartnerResource = "UPDATE partner_resources SET `resource_id` = ?, `specific_resource_desc` = ? WHERE partner_id = ?";
         const partnerResourceValues = [
-            req.body.resourceType, // Ensure this matches the name in the frontend
-            req.body.specificResourceDesc, // Ensure this matches the name in the frontend
+            req.body.resourceType,
+            req.body.specificResourceDesc, 
             req.params.id
         ];
         db.query(sqlPartnerResource, partnerResourceValues, (err, partnerResourceData) => {
@@ -313,27 +171,7 @@ app.put('/update/:id', (req, res) => {
     });
 });
 
-
-// app.delete('/delete/:id', (req, res) => {
-//     const sql = "DELETE FROM connections WHERE id =?";
-//     const id = req.params.id;
-
-//     db.query(sql, [id], (err, data) =>{
-//         if(err) return res.json(err);
-//         return res.json("deleted")
-//     })
-// })
-
-// app.delete('/delete/:id', (req, res) => {
-//     console.log('Delete request received:', req.params.id); // Log request params
-//     const sql = "DELETE FROM connections WHERE id =?";
-//     const id = req.params.id;
-//     db.query(sql, [id], (err, data) => {
-//         if (err) return res.json(err);
-//         return res.json("deleted");
-//     });
-// });
-
+// Delete user and replace using db transaction
 app.delete('/delete/:id', (req, res) => {
     console.log('Delete request received:', req.params.id); // Log request params
     const id = req.params.id;
@@ -378,11 +216,12 @@ app.delete('/delete/:id', (req, res) => {
     });
 });
 
+// Delete resource type and replace using db transaction
 app.delete('/resources/:id', (req, res) => {
     const resourceIdToDelete = req.params.id;
     const { newResourceType, isNewResource } = req.body;
 
-    console.log('Delete resource request received:', resourceIdToDelete, newResourceType, isNewResource);
+    console.log('Delete resource request received:', resourceIdToDelete, newResourceType, isNewResource); // Log request
 
     db.beginTransaction(err => {
         if (err) {
@@ -463,6 +302,52 @@ app.delete('/resources/:id', (req, res) => {
     });
 });
 
+// Post user question and prompt to OpenAI API and return response 
+app.post('/ask', async (req, res) => {
+    console.log('Ask request received:', req.body); // Log request body
+    try {
+        const { question } = req.body;
+        db.query(`
+            SELECT c.id, c.name, c.type, r.resource_type, pr.specific_resource_desc, c.contact
+            FROM connections c
+            JOIN partner_resources pr ON c.id = pr.partner_id
+            JOIN resources r ON pr.resource_id = r.resource_id
+        `, async (err, data) => {
+            let formattedData = "No additional data available due to a database error.";
+            if (!err) {
+                formattedData = data.map(item => `ID: ${item.id}, Name: ${item.name}, Type: ${item.type}, Resource Type: ${item.resource_type}, Specific Resource Description: ${item.specific_resource_desc}, Contact: ${item.contact}`).join('\n');
+            } else {
+                console.error('Error fetching data from the database:', err.stack);
+            }
+
+            const combinedPrompt = `
+                The following is a list of partners and their details:
+                ${formattedData}
+                
+                User question: ${question}
+            `;
+
+            const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+                model: "gpt-4-turbo",
+                messages: [
+                    { role: "system", content: "You are a helpful assistant called 'MySchool AI' on a school's career and technical education partner management website. Provide clear and concise answers to the user's questions. Only provide answers to questions that are relevant to the program as well as the provided data." },
+                    { role: "user", content: combinedPrompt }
+                ],
+                max_tokens: 250
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            res.json({ answer: response.data.choices[0].message.content.trim() });
+        });
+    } catch (error) {
+        console.error('Error communicating with OpenAI:', error.response ? error.response.data : error.message);
+        res.status(500).json({ error: 'Failed to get response from OpenAI' });
+    }
+});
 
 app.listen(8081, () => {
     console.log("listening...")

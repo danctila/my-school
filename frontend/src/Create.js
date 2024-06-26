@@ -34,6 +34,7 @@ function Create() {
     // Route navigation
     const navigate = useNavigate()
 
+    // Pull data from connections table and resources table
     useEffect(() => {
         axios.get('http://localhost:8081/connections')
             .then(res => setData(res.data))
@@ -93,7 +94,7 @@ function Create() {
             setContactError('');
         }
 
-        // Validates partner name input for duplicates
+        // Validate partner name input for duplicates
         for (const element of data) {
             if (element.name === name) {
                 setDuplicateNameError('Duplicate partner name');
@@ -115,7 +116,7 @@ function Create() {
                 setDuplicateResourceError('');
             }
 
-            // Add the new resource type to the database
+            // Add the new resource type to the database if not duplicate
             try {
                 const res = await axios.post('http://localhost:8081/resources', { resourceType: newResourceType });
                 finalResourceType = res.data.resource_id; // Assuming the response includes the new resource_id
@@ -155,6 +156,7 @@ function Create() {
             </Tooltip>
                 <Heading fontWeight='bold'>Create Partner</Heading>
             </HStack>
+            
             {/* Form Section */}
             <form onSubmit={handleSubmit}>
                     <Box mb='5px'>

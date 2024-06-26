@@ -9,6 +9,7 @@ function Login() {
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
+    // Handle login request with /login server endpoint
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
