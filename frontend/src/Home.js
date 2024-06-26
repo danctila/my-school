@@ -32,21 +32,30 @@ function Home() {
         if (!loggedIn) {
             Navigate('/login');
         } else {
-            axios.get('http://localhost:8081/connections')
-                .then(res => setData(res.data.sort((a, b) => a.id - b.id)))
-                .catch(err => console.log(err));
-            axios.get('http://localhost:8081/resources')
-                .then(res => setResources(res.data))
-                .catch(err => console.log(err));
+            fetchData();
         }
     }, [Navigate]);
 
+    const fetchData = () => {
+        axios.get('http://localhost:8081/connections')
+            .then(res => setData(res.data.sort((a, b) => a.id - b.id)))
+            .catch(err => console.log(err));
+
+        axios.get('http://localhost:8081/resources')
+            .then(res => setResources(res.data))
+            .catch(err => console.log(err));
+    };
+
     const handleDelete = (id) => {
-        axios.delete('http://localhost:8081/delete/'+id)
-        .then(res => Navigate('/'))
-        .catch(err => console.log(err))
-        window.location.reload()
-    }
+        axios.delete('http://localhost:8081/delete/' + id)
+            .then(res => {
+                if (res.data === 'deleted') {
+                    setData(data.filter(item => item.id !== id)); // Remove the deleted item from the state
+                }
+            })
+            .catch(err => console.log(err));
+    };
+    
 
     const handleCheckbox = (checkbox) => {
         if(checkbox.target.value === '1'){
@@ -90,7 +99,7 @@ function Home() {
      }
 
      const downloadBackup = () => {
-        let stringData = data.map(item => `${item.name}, ${item.type}, ${item.ResourceType}, ${item.ResourceDesc}, ${item.contact}`);
+        let stringData = data.map(item => `${item.name}, ${item.type}, ${item.resource_type}, ${item.specific_resource_desc}, ${item.contact}`);
         let csvContent = stringData.join('\n\n')
         let element = document.createElement('a')
         let file = new Blob([csvContent], {type: 'text/plain'})
@@ -122,12 +131,10 @@ function Home() {
     const handleResourceTypeChange = (resourceType) => {
         setSelectedResourceType(resourceType);
         if (resourceType === '') {
-            axios.get('http://localhost:8081/connections')
-                .then(res => setData(res.data.sort((a, b) => a.id - b.id)))
-                .catch(err => console.log(err));
+            fetchData();
         } else {
             axios.get(`http://localhost:8081/connections?resourceType=${resourceType}`)
-                .then(res => setData(res.data.filter(item => item.ResourceType === resourceType).sort((a, b) => a.id - b.id)))
+                .then(res => setData(res.data.filter(item => item.resource_type === resourceType).sort((a, b) => a.id - b.id)))
                 .catch(err => console.log(err));
         }
     };
@@ -204,7 +211,10 @@ function Home() {
             </Tooltip>
                     <Text my='0px' h='30px' fontWeight='bold' fontSize='24px'>Results:</Text>
                 </HStack>
+                <HStack>
+                    <Button borderRadius='5px'  my='0px' w='170px' h='40px' as={ReactRouterLink} to='/update-resources' color='white' bg='#3A77ED' _hover >Manage Resources</Button>
                     <Button borderRadius='5px'  my='0px' w='80px' h='40px' as={ReactRouterLink} to='/create' bg='#3AED3A' _hover >Add+</Button>
+                </HStack>
                 </HStack>
                 <Divider borderColor='black' h='1px' w='1505px' orientation='horizontal'/>
                 <Table size='sm'>
@@ -221,8 +231,8 @@ function Home() {
                                     <MenuList>
                                         <MenuItem onClick={() => handleResourceTypeChange('')}>All</MenuItem>
                                         {resources.map((resource) => (
-                                            <MenuItem key={resource.ResourceId} onClick={() => handleResourceTypeChange(resource.ResourceType)}>
-                                                {resource.ResourceType}
+                                            <MenuItem key={resource.resource_id} onClick={() => handleResourceTypeChange(resource.resource_type)}>
+                                                 {resource.resource_type}
                                             </MenuItem>
                                         ))}
                                     </MenuList>
@@ -256,7 +266,7 @@ function Home() {
                         else if (String(data.id).toLowerCase().includes(searchTerm.toLowerCase()) ||
                         data.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         data.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        data.ResourceDesc.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        data.specific_resource_desc.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         data.contact.toLowerCase().includes(searchTerm.toLowerCase())) {
                                 return data;
                         }
@@ -265,7 +275,7 @@ function Home() {
                                 <Td fontSize='14px' w='10%'>{data.id}</Td>
                                 <Td fontSize='14px' w='20%'>{data.name}</Td>
                                 <Td fontSize='14px' w='20%'>{data.type}</Td>
-                                <Td fontSize='14px' w='20%'>{data.ResourceDesc}</Td>
+                                <Td fontSize='14px' w='20%'>{data.specific_resource_desc}</Td>
                                 <Td fontSize='14px' w='20%'>{data.contact}</Td>
                                 <Td w='10%'> 
                                     <Button fontSize='14px' fontWeight='normal' mx='2px' color='white' borderRadius='3px' w='70px' h='30px' bg='#3A77ED' as={ReactRouterLink} to={`/update/${data.id}`} _hover>UPDATE</Button>

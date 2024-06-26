@@ -10,7 +10,9 @@ function Create() {
     const [name, setName] = useState('')
     const [type, setType] = useState('')
     const [resourceType, setResourceType] = useState('');
+    const [specificResourceDesc, setSpecificResourceDesc] = useState('');
     const [contact, setContact] = useState('')
+    const [newResourceType, setNewResourceType] = useState('')
 
     // Hold current state of tooltip
     const [createTip, setCreateTip] = useState(false)
@@ -19,8 +21,11 @@ function Create() {
     const [nameError, setNameError] = useState('');
     const [typeError, setTypeError] = useState('');
     const [resourceTypeError, setResourceTypeError] = useState('');
+    const [specificResourceDescError, setSpecificResourceDescError] = useState('');
     const [contactError, setContactError] = useState('');
-    const [duplicateError, setDuplicateError] = useState('')
+    const [newResourceTypeError, setNewResourceTypeError] = useState('');
+    const [duplicateNameError, setDuplicateNameError] = useState('');
+    const [duplicateResourceError, setDuplicateResourceError] = useState('');
 
     // Hold current state of the database
     const [data, setData] = useState([])
@@ -41,7 +46,7 @@ function Create() {
 
 
     // Handle form submission
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         // Prevent default window refresh
         event.preventDefault();
 
@@ -60,11 +65,25 @@ function Create() {
             setTypeError('');
         }
 
-        if (!resourceType.trim()) {
+        if (resourceType === 'new' && !newResourceType.trim()) {
+            setNewResourceTypeError('New resource type is required');
+            return;
+        } else {
+            setNewResourceTypeError('');
+        }
+
+        if (!resourceType?.trim() && resourceType !== 'new') {
             setResourceTypeError('Resource type is required');
             return;
         } else {
             setResourceTypeError('');
+        }
+
+        if (!specificResourceDesc.trim()) {
+            setSpecificResourceDescError('Specific resource description is required');
+            return;
+        } else {
+            setSpecificResourceDescError('');
         }
 
         if (!contact.trim()) {
@@ -75,17 +94,39 @@ function Create() {
         }
 
         // Validates partner name input for duplicates
-        for(const element of data){
-            if(element.name === name){
-                setDuplicateError('Duplicate partner name')
-                return
+        for (const element of data) {
+            if (element.name === name) {
+                setDuplicateNameError('Duplicate partner name');
+                return;
             } else {
-                setDuplicateError('')
+                setDuplicateNameError('');
             }
         }
 
+        let finalResourceType = resourceType;
+
+        if (resourceType === 'new') {
+            // Check for duplicate resource type
+            const existingResource = resources.find(resource => resource.resource_type.toLowerCase() === newResourceType.toLowerCase());
+            if (existingResource) {
+                setDuplicateResourceError('Resource type already exists');
+                return;
+            } else {
+                setDuplicateResourceError('');
+            }
+
+            // Add the new resource type to the database
+            try {
+                const res = await axios.post('http://localhost:8081/resources', { resourceType: newResourceType });
+                finalResourceType = res.data.resource_id; // Assuming the response includes the new resource_id
+            } catch (error) {
+                console.error(error);
+                return;
+            }
+        }
+        
         // Adds to database if form is validated using current users ID with /create server endpoint
-        axios.post('http://localhost:8081/create', { name, type, resourceType, contact })
+        axios.post('http://localhost:8081/create', { name, type, resourceType: finalResourceType, specificResourceDesc, contact })
         .then(res => {
             navigate('/');
         }).catch(err => console.log(err))
@@ -121,7 +162,7 @@ function Create() {
                         <Input type='text' placeholder='Enter Name' className='form-control' 
                         onChange={e => setName(e.target.value)}/>
                         <span className='text-danger'>{nameError}</span>
-                        <span className='text-danger'>{duplicateError}</span>
+                        <span className='text-danger'>{duplicateNameError}</span>
                     </Box>
                     <Box mb='5px'>
                         <FormLabel htmlFor=''>Type</FormLabel>
@@ -131,15 +172,31 @@ function Create() {
                     </Box>
                     <Box mb='5px'>
                     <FormLabel htmlFor=''>Resource Type</FormLabel>
-                        <Select placeholder='Select Resource Type' className='form-control' 
-                            onChange={e => setResourceType(e.target.value)}>
+                    <Select placeholder='Select Resource Type' className='form-control' 
+                            value={resourceType} onChange={e => setResourceType(e.target.value)}>
+                            <option value="new">New</option>
                             {resources.map(resource => (
-                                <option key={resource.ResourceId} value={resource.ResourceId}>
-                                    {resource.ResourceType}
+                                <option key={resource.resource_id} value={resource.resource_id}>
+                                    {resource.resource_type}
                                 </option>
                             ))}
                         </Select>
                         <span className='text-danger'>{resourceTypeError}</span>
+                    </Box>
+                    {resourceType === 'new' && (
+                        <Box mb='5px'>
+                            <FormLabel htmlFor=''>New Resource Type</FormLabel>
+                            <Input type='text' placeholder='Enter New Resource Type' className='form-control'
+                                onChange={e => setNewResourceType(e.target.value)} value={newResourceType} />
+                            <span className='text-danger'>{newResourceTypeError}</span>
+                            <span className='text-danger'>{duplicateResourceError}</span>
+                        </Box>
+                    )}
+                    <Box mb='5px'>
+                        <FormLabel htmlFor=''>Resource Description</FormLabel>
+                        <Input type='text' placeholder='Enter Resource Description' className='form-control'
+                            onChange={e => setSpecificResourceDesc(e.target.value)} value={specificResourceDesc} />
+                        <span className='text-danger'>{specificResourceDescError}</span>
                     </Box>
                     <Box mb='5px'>
                         <FormLabel htmlFor=''>Contact</FormLabel>
