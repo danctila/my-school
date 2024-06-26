@@ -303,7 +303,7 @@ function Home() {
             </TableContainer>
 
             {/* Backup Section */}
-            <HStack w='1500px' justifyContent='left' mt='60px'>
+            <HStack w='1500px' justifyContent='left' mt='40px'>
             <Tooltip
                 bg="#7C3AED"
                 color="white"
@@ -327,30 +327,11 @@ function Home() {
                 <Button borderRadius='5px' onClick={downloadBackup} w='160px' h='40px' color='white' bg='#7C3AED' _hover>Download Backup</Button>
             </Box>
 
-            {/* Help & Instructions Section */}
-            <HStack w='1500px' justifyContent='left' mt='60px'>
-                <Text fontSize='24px' fontWeight='bold' mb='15px'>Help & Instructions</Text>
-            </HStack>
-            <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' mb='50px'>
-                <Text fontSize='20px' fontWeight='normal' mb='0px'>ID Numbers:</Text>
-                <UnorderedList>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    ID numbers are added on a cumulative basis
-                    </ListItem>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    ID numbers of added entries are based on the running total of the table
-                    </ListItem>
-                    <ListItem fontWeight='normal' fontSize='16px'>
-                    EX: There are 40 entries and 1 is deleted. If 1 entry is added. The new entry added has an ID number of 41.
-                    </ListItem>
-                </UnorderedList>
-            </Box>
-            
             {/* AI Help Section */}
-            <HStack w='1500px' justifyContent='left' >
+            <HStack w='1500px' justifyContent='left' mt='40px'>
                 <Text fontSize='24px' fontWeight='bold' mb='15px' color='#7C3AED'>MySchool AI Assistant</Text>
             </HStack>
-            <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' mb='150px' ref={aiSectionRef} style={{
+            <Box p='15px' w='1500px' bg='white' borderRadius='8px' border='2px' borderColor='#DEDDE2' mb='300px' ref={aiSectionRef} style={{
                     transition: 'box-shadow 0.5s ease-in-out',
                     boxShadow: isPulsing ? '0 0 20px 5px rgba(124, 58, 237, 0.7)' : 'none',
                 }}>
