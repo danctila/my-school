@@ -1,4 +1,8 @@
+
  # MySchool Partner Program
+ 
+***WINNER***
+This project won first place at the Connecticut FBLA State Leadership conference in the coding and programming presentation category. The project is now moving on to the national competition.
 
 my-school is a project developed with React and Node.js for the 2023/2024 coding and programming CT FBLA competition. 
 
@@ -6,15 +10,17 @@ my-school is a project developed with React and Node.js for the 2023/2024 coding
 
 The MySchool program looks like this in a localhost development environment:
 
-<img src="https://github.com/danctila/my-school/assets/134968796/cf278fd2-912d-40d3-9cd4-c2407b2c49e1" alt="myschool website 1" width="800"/>
+<img src="https://github.com/danctila/my-school/assets/134968796/17ae59ce-f62b-4b87-a54f-56f631873e35" alt="myschool website 1" width="800"/>
 
-<img src="https://github.com/danctila/my-school/assets/134968796/1215b8ca-5b17-4788-93df-9d64956aa194" alt="myschool website 2" width="800"/>
+<img src="https://github.com/danctila/my-school/assets/134968796/984192e3-13fc-47b1-b138-cf8966f06cb3" alt="myschool website 2" width="800"/>
 
-<img src="https://github.com/danctila/my-school/assets/134968796/b351848d-93f2-489c-982f-c4bba77a84d5" alt="myschool website 3" width="800"/>
+<img src="https://github.com/danctila/my-school/assets/134968796/77322152-6d6b-41b6-a878-e8b04bfabd41" alt="myschool website 3" width="800"/>
 
-<img src="https://github.com/danctila/my-school/assets/134968796/fb2ff9a4-9e10-4a89-863c-8948234d3e29" alt="myschool website 4" width="800"/>
+<img src="https://github.com/danctila/my-school/assets/134968796/75dc8bb6-2483-4446-ae64-50c4084cf7af" alt="myschool website 4" width="800"/>
 
-<img src="https://github.com/danctila/my-school/assets/134968796/0441dddd-3490-48ac-9b89-1dea6990caac" alt="myschool website 5" width="800"/>
+<img src="https://github.com/danctila/my-school/assets/134968796/0790fcdc-2f03-4643-8fd3-ee7694ddaf93" alt="myschool website 4" width="800"/>
+
+<img src="https://github.com/danctila/my-school/assets/134968796/b3b37d08-f63b-45bb-97d5-0536949c49f8" alt="myschool website 5" width="800"/>
 
 ## Installation
 
@@ -23,7 +29,7 @@ The MySchool program looks like this in a localhost development environment:
 In order to run this project **you will need 3 applications installed** on your machine
 
 #### 1 - Visual Studio Code
-Install Microsofts Visual Studio Code IDE from [this website](https://code.visualstudio.com/ "this website")
+Install Microsoft's Visual Studio Code IDE from [this website](https://code.visualstudio.com/ "this website")
 <img src="https://github.com/danctila/my-school/assets/134968796/93371555-3f98-4708-b17d-56a4ab4233ea" alt="visual studio code website" width="800"/>
 #### 2 - Node JS
 Install Node JS from [this website](https://nodejs.org/en "this website") onto your machine to be able to run the start commands for the frontend and backend
@@ -90,37 +96,87 @@ Type the following commands in this order into this terminal window:
 
 After these commands, the frontend server should start and the site https://localhost:3000 should open in your browser. If it does not automatically open, navigate to that site in any browser.
 
-If this is succesful, return to the frontend at http://localhost:3000 and the table should be filled with data. If it is not, refresh the page.
+If this is successful, return to the frontend at http://localhost:3000 and the table should be filled with data. If it is not, refresh the page.
 
 ## Features
 1. Enter search terms into the search input and dynamically receive data
 2. Filter using five different methods of choice including alphabetically and by id number
-3. Add and update users with custom preferences using validated input fields
-4. Download a backup of the current database state to a text file using the download backup button
-5. Fully validated data to stop duplicate entries
+3. Filter using partner resource types
+4. Add and update users with custom preferences using validated input fields
+5. Manage partner resources with automatic database transactions
+6. Download a backup of the current database state to a text file using the download backup button
+7. Fully validated data to stop duplicate entries by partner name and new resource type
+8. MySchool AI which has access to all data to give fast responses to user questions
 
 ## Technologies
 #### Frontend
 The frontend was developed using React with JavaScript. The project was bootstrapped with create-react-app. The frontend uses Bootstrap and Chakra UI for custom styling as well as Axios for connection to the backend API.
 
 #### Backend
-The backend server was developed using Express.Js with Node. The server includes 5 endpoints for data collection and manipulation
-1.  "/" for selecting all data from the database
-2. "/user/:id" for selecting a single contact from the database which matches a provided id
-3. "/create" for adding a contact to the database
-4. "update/:id" for updating an existing contact in the database which matches a provided id
-5. "/delete/:id" for deleting an existing contact in the databse which matches a provided id
+The backend server was developed using Express.JS with Node. The server includes 10 endpoints for data collection and manipulation
+ 1. Login Endpoint
+- URL: /login
+- Method: POST
+- Handles user login by comparing the provided password with the stored admin password.
+
+2. Fetch All Connections
+- URL: /connections
+- Method: GET
+- Retrieves all connections along with their associated resource descriptions.
+
+3. Fetch All Resources
+- URL: /resources
+- Method: GET
+- Retrieves all resource types.
+
+4. Add Resource Type
+- URL: /resources
+- Method: POST
+- Adds a new resource type to the database.
+
+5. Fetch a Single User by ID
+- URL: /user/:id
+- Method: GET
+- Retrieves a single user by their ID, along with their associated resource descriptions.
+
+6. Create New Partner
+- URL: /create
+- Method: POST
+- Creates a new partner in the database, along with their associated resource.
+
+7. Update a Single User by ID
+- URL: /update/:id
+- Method: PUT
+- Updates the details of a single user by their ID, including their associated resource.
+
+8. Delete User by ID
+- URL: /delete/:id
+- Method: DELETE
+- Deletes a user by their ID, along with their associated resource using a database transaction.
+
+9. Delete Resource Type by ID
+- URL: /resources/:id
+- Method: DELETE
+- Deletes a resource type by its ID, replacing it with a new or existing resource type using a database transaction.
+
+10. Ask Question
+- URL: /ask
+- Method: POST
+- Sends a user question along with partner details to the OpenAI API and returns the response.
 
 #### Database
-The database is a MySql database hosted on a Raspberry Pi 4. The database includes fields for id, name, type, resources, and contact for various contacts inputed to the database. The database is queried via the backend API endpoints and the createConnection() function in the backend to access the Raspberry Pi 4.
+The database is a MySql database previously hosted on a Raspberry Pi 4 but now in an Amazon Relational Database Service instance on Amazon Web Services. The database has been adjusted from a single table that included fields for id, name, type, resources, and contact for various contacts inputted to the database to now a 3 table model. The new relational model has increased normalcy and data integrity by integrating associations and key relationships. 
+
+<img src="https://github.com/danctila/my-school/assets/134968796/23db0dcc-6212-48e5-bf9d-8f65d8cd1816" alt="create folder" width="800"/>
+
 
 ## Reflection
 
 **- What was the context for this project?**
 
-This project was developed for the 2023-2024 FBLA Coding and Programming Competition. The topic was to create a program that allows your Career and Technical Education Department to collect and store information about business and community partners. The program was required include information on at least 25 different partners (real or fictional), with details such as, but not limited to, the type of organization, resources available, and direct contact information for an individual. The program was also required to enable users to search and filter the information as needed.
+This project was developed for the CT State 2023-2024 FBLA Coding and Programming Competition. The topic was to create a program that allows your Career and Technical Education Department to collect and store information about business and community partners. The program was required include information on at least 25 different partners (real or fictional), with details such as, but not limited to, the type of organization, resources available, and direct contact information for an individual. The program was also required to enable users to search and filter the information as needed.
 
 **- What was built?**
 
-The final project ended as a full stack web application using NodeJs and Express for the backend, React for the frontend, and MySql for database management. The backend includes a RESTful API which connects to the frontend to ultimately displays the database, hosted on a Raspberry Pi 4, on the frontend website.
+The final project ended as a full stack web application using NodeJS and Express.JS for the backend, React for the frontend, and MySQL for database management. The backend includes a RESTful API which connects to the frontend to ultimately displays the database, hosted on an AWS RDS instance, on the frontend website.
 
