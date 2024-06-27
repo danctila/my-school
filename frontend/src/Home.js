@@ -1,28 +1,39 @@
 import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link as ReactRouterLink } from 'react-router-dom'
-import { Box, Button, HStack, Text, VStack, Input, Divider, TableContainer, Table, Thead, Tr, Th, Tbody, Td, UnorderedList, ListItem, Tooltip, IconButton, Select, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react'
+import { Box, Button, HStack, Text, VStack, Input, Divider, TableContainer, Table, Thead, Tr, Th, Tbody, Td, Tooltip, IconButton, Select, Menu, MenuButton, MenuList, MenuItem, Spinner  } from '@chakra-ui/react'
 import { InfoOutlineIcon, ChevronDownIcon  } from "@chakra-ui/icons";
 import { FaCommentDots } from 'react-icons/fa';
 
 function Home() {
     const Navigate = useNavigate()
+
+    // Hold current data in connections and resources tables
     const [data, setData] = useState([])
     const [resources, setResources] = useState([]);
+
+    // Hold current value in search bar
     const [searchTerm, setSearchTerm] = useState('')
+
+    // Handle filtering by resource type, name, and ID
+    const [filter, setFilter] = useState(true)
     const [selectedResourceType, setSelectedResourceType] = useState('');
     const [nameAZFilter, setnameAZFilter] = useState(false)
     const [nameZAFilter, setnameZAFilter] = useState(false)
     const [IDIncFilter, setIDIncFilter] = useState(false)
     const [IDDecFilter, setIDDecFilter] = useState(false)
-    const [filter, setFilter] = useState(true)
+
+    // Hold state of tooltips
     const [searchTip, setSearchTip] = useState(false);
     const [filterTip, setFilterTip] = useState(false);
     const [actionTip, setActionTip] = useState(false);
     const [backupTip, setBackupTip] = useState(false);
     const [resultsTip, setResultsTip] = useState(false);
+
+    // Manage MySchool AI states for question, answer, loading, and scrolling
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const aiSectionRef = useRef(null);
     const [isPulsing, setIsPulsing] = useState(false);
 
@@ -132,9 +143,16 @@ function Home() {
      // Handle MySchool AI question submission
      const handleQuestionSubmit = (e) => {
         e.preventDefault();
+        setIsLoading(true);
         axios.post('http://localhost:8081/ask', { question })
-            .then(res => setAnswer(res.data.answer))
-            .catch(err => console.error(err));
+            .then(res => {
+                setAnswer(res.data.answer)
+                setIsLoading(false);
+            })
+            .catch(err => {
+                setIsLoading(false);
+                console.error(err)
+            });
     };
 
     // Handle chat bubble click to MySchool AI
@@ -346,6 +364,10 @@ function Home() {
                     />
                     <Button type='submit' borderRadius='5px' w='160px' h='40px' color='white' bg='#7C3AED' _hover>Submit</Button>
                 </form>
+                {/* Loading indicator */}
+                {isLoading && <Spinner size="lg" color="#7C3AED" mt="10px" />} 
+
+                {/* AI response */}
                 {answer && (
                     <Box mt='20px'>
                         <Text fontSize='20px' fontWeight='normal'>Answer:</Text>

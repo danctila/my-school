@@ -330,7 +330,7 @@ app.post('/ask', async (req, res) => {
             const response = await axios.post('https://api.openai.com/v1/chat/completions', {
                 model: "gpt-4-turbo",
                 messages: [
-                    { role: "system", content: "You are a helpful assistant called 'MySchool AI' on a school's career and technical education partner management website. Provide clear and concise answers to the user's questions. Only provide answers to questions that are relevant to the program as well as the provided data." },
+                    { role: "system", content: "You are a helpful assistant called 'MySchool AI' on a school's career and technical education partner management website. Provide clear and concise answers to the user's questions. Only provide answers to questions that are relevant to the program as well as the provided data. Your response should be formatted to plain text without any bold or other features. You cannot send any requests to the user to continue responses, rate responses, or anything of that kind." },
                     { role: "user", content: combinedPrompt }
                 ],
                 max_tokens: 250
